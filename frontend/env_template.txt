@@ -1,0 +1,3 @@
+# Backend API URL - FIXED TO PORT 8001
+REACT_APP_API_URL=http://localhost:8001
+

@@ -1,0 +1,31 @@
+# FastAPI Backend Dependencies
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
+python-multipart==0.0.9
+
+# Database & ORM
+sqlalchemy>=2.0.0
+psycopg2-binary>=2.9.0  # PostgreSQL driver (use psycopg2 for production)
+# For SQLite (included in Python), no additional driver needed
+
+# Authentication & Security
+python-jose[cryptography]>=3.3.0  # JWT tokens
+passlib[bcrypt]>=1.7.4  # Password hashing
+python-dotenv>=1.0.0  # Environment variables
+pydantic[email]>=2.0.0  # Email validation
+
+# Image Processing
+pillow==10.4.0
+numpy>=1.24.0,<2.0.0
+
+# Visualization & Reports
+matplotlib>=3.8.0
+scipy>=1.11.0
+reportlab>=4.0.0
+
+# Machine Learning (use tensorflow for local, tensorflow-cpu for deployment)
+tensorflow-cpu>=2.20.0
+
+# Optional: For production deployment
+# gunicorn>=21.0.0  # Production WSGI server
+# sentry-sdk[fastapi]>=1.40.0  # Error tracking

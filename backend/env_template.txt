@@ -1,0 +1,88 @@
+# ============================================================================
+# DATABASE CONFIGURATION
+# ============================================================================
+
+# For Development (SQLite):
+DATABASE_URL=sqlite:///./breast_cancer_detection.db
+
+# For Production (PostgreSQL):
+# DATABASE_URL=postgresql://username:password@hostname:5432/database_name
+
+# Examples:
+# Render: postgresql://user:pass@dpg-xxxxx.oregon-postgres.render.com/dbname
+# Railway: postgresql://postgres:pass@containers-us-west-xx.railway.app:5432/railway
+# Heroku: postgres://user:pass@ec2-xx-xx-xx-xx.compute-1.amazonaws.com:5432/dbname
+# Local: postgresql://postgres:password@localhost:5432/breast_cancer_db
+
+# ============================================================================
+# SECURITY - JWT CONFIGURATION
+# ============================================================================
+
+# Generate with: python -c "import secrets; print(secrets.token_urlsafe(32))"
+SECRET_KEY=YOUR-SECRET-KEY-CHANGE-IN-PRODUCTION-MIN-32-CHARS-LONG-RANDOM-STRING
+
+# Token expiration (minutes)
+ACCESS_TOKEN_EXPIRE_MINUTES=1440
+
+# ============================================================================
+# CORS CONFIGURATION
+# ============================================================================
+
+# For Development:
+ALLOWED_ORIGINS=*
+
+# For Production (comma-separated):
+# ALLOWED_ORIGINS=https://yourapp.vercel.app,https://www.yourdomain.com
+
+# ============================================================================
+# AI MODEL CONFIGURATION
+# ============================================================================
+
+MODEL_PATH=./models/breast_cancer_model.keras
+
+# For cloud storage:
+# MODEL_PATH=https://your-bucket.s3.amazonaws.com/models/breast_cancer_model.keras
+
+# ============================================================================
+# FILE STORAGE CONFIGURATION
+# ============================================================================
+
+# Local Storage (Development):
+UPLOAD_DIR=./uploads
+STORAGE_TYPE=local
+
+# AWS S3 (Production):
+# STORAGE_TYPE=s3
+# AWS_ACCESS_KEY_ID=your_access_key
+# AWS_SECRET_ACCESS_KEY=your_secret_key
+# AWS_S3_BUCKET=your-bucket-name
+# AWS_REGION=us-east-1
+
+# Cloudinary (Alternative):
+# STORAGE_TYPE=cloudinary
+# CLOUDINARY_CLOUD_NAME=your_cloud_name
+# CLOUDINARY_API_KEY=your_api_key
+# CLOUDINARY_API_SECRET=your_api_secret
+
+# ============================================================================
+# SERVER CONFIGURATION
+# ============================================================================
+
+HOST=0.0.0.0
+PORT=8000
+ENVIRONMENT=development
+
+# For production:
+# ENVIRONMENT=production
+# DEBUG=False
+
+# ============================================================================
+# MONITORING & LOGGING (Optional)
+# ============================================================================
+
+# Sentry Error Tracking:
+# SENTRY_DSN=https://xxxxx@sentry.io/xxxxx
+
+# Log Level:
+LOG_LEVEL=INFO
+
