@@ -16,7 +16,7 @@ import os
 
 from models_saas import User, Tenant, UserRole, AuditLog
 from schemas_saas import TokenData
-from database import get_db
+from database_saas import get_db
 
 
 # ============================================================================
