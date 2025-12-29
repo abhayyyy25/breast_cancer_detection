@@ -1,6 +1,6 @@
 # ============================================================================
 # Breast Cancer Detection - Multi-Tenant SaaS Platform
-# Python Dependencies for Backend
+# Python Dependencies for Render Deployment
 # ============================================================================
 
 # FastAPI Backend Framework
@@ -40,7 +40,7 @@ requests>=2.31.0
 python-dateutil>=2.8.2
 email-validator>=2.0.0
 
-# Production Server (recommended for deployment)
+# Production Server (optional but recommended)
 gunicorn>=21.0.0
 
 # Error Tracking (optional)
@@ -48,3 +48,4 @@ gunicorn>=21.0.0
 
 # Additional utilities
 six>=1.16.0
+

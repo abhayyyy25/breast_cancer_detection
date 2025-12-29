@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 import LogoutButton from './LogoutButton';
@@ -22,6 +23,7 @@ const colors = {
 
 const SuperAdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   // Create axios-like instance using fetch
   const axiosInstance = {
@@ -314,7 +316,12 @@ const SuperAdminDashboard = () => {
               </div>
 
               <div className="tenant-actions">
-                <button className="btn-view-details">View Details</button>
+                <button 
+                  className="btn-view-details"
+                  onClick={() => navigate(`/superadmin/organization/${tenant.id}`)}
+                >
+                  View Details
+                </button>
                 <button
                   className={`btn-toggle-status ${tenant.is_active ? 'deactivate' : 'activate'}`}
                   onClick={() => handleToggleTenantStatus(tenant.id, tenant.is_active)}

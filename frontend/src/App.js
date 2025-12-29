@@ -5,6 +5,8 @@ import Login from "./components/Login";
 import Signup from "./components/Signup";
 import ProtectedRoute from "./components/ProtectedRoute";
 import RoleBasedDashboard from "./components/RoleBasedDashboard";
+import PatientDetails from "./components/PatientDetails";
+import OrganizationDetails from "./components/OrganizationDetails";
 
 function App() {
   return (
@@ -13,9 +15,109 @@ function App() {
       <Route path="/login" element={<Login />} />
       <Route path="/signup" element={<Signup />} />
       
-      {/* Protected Routes - Role-Based Dashboard */}
+      {/* Protected Routes - Role-Based Dashboards */}
       <Route
-        path="/*"
+        path="/superadmin"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/superadmin/*"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/admin/*"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/doctor"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/doctor/*"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/patient"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/patient/*"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Protected Routes - Detail Pages */}
+      <Route
+        path="/admin/patient/:id"
+        element={
+          <ProtectedRoute>
+            <PatientDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/doctor/patient/:id"
+        element={
+          <ProtectedRoute>
+            <PatientDetails />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/superadmin/organization/:id"
+        element={
+          <ProtectedRoute>
+            <OrganizationDetails />
+          </ProtectedRoute>
+        }
+      />
+      
+      {/* Root Dashboard Route */}
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <RoleBasedDashboard />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/dashboard"
         element={
           <ProtectedRoute>
             <RoleBasedDashboard />

@@ -74,6 +74,8 @@
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 12px rgba(156, 43, 109, 0.25);
+  white-space: nowrap;
+  width: auto;
 }
 
 .btn-profile:hover {

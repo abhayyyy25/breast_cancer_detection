@@ -102,14 +102,18 @@ export const AuthProvider = ({ children }) => {
       const accessToken = data.access_token;
       const userData = data.user;
 
+      // 🔍 DEBUG: Log the exact role value from backend
+      console.log('✅ Login successful!');
+      console.log('👤 User role (exact):', userData?.role);
+      console.log('👤 User role (type):', typeof userData?.role);
+      console.log('👤 Full user object:', JSON.stringify(userData, null, 2));
+
       setToken(accessToken);
       setUser(userData);
       
       localStorage.setItem('token', accessToken);
       localStorage.setItem('user', JSON.stringify(userData));
 
-      console.log('✅ Login successful!');
-      console.log('👤 User role:', userData?.role);
       return { success: true, user: userData };
     } catch (error) {
       console.error('❌ Login error:', error);

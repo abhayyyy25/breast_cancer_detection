@@ -24,24 +24,55 @@ function Login() {
 
     try {
       const result = await login(username, password);
+      
+      // 🔍 DEBUG: Log the entire response
+      console.log('Login Response:', result);
+      console.log('Success:', result.success);
+      console.log('User Object:', result.user);
+      console.log('Role (raw):', result.user?.role);
+      
       if (result.success) {
         // Redirect based on user role
         const role = result.user?.role;
-        if (role === 'super_admin') {
-          navigate('/superadmin');
-        } else if (role === 'organization_admin') {
-          navigate('/admin');
-        } else if (role === 'doctor' || role === 'lab_tech') {
-          navigate('/doctor');
-        } else if (role === 'patient') {
-          navigate('/patient');
-        } else {
-          navigate('/');
+        
+        // ✅ Normalize role to lowercase to prevent case-sensitivity issues
+        const normalizedRole = role?.toLowerCase().trim();
+        
+        console.log('Role (normalized):', normalizedRole);
+        
+        // Switch statement for better readability
+        switch (normalizedRole) {
+          case 'super_admin':
+          case 'superadmin':
+            console.log('🚀 Redirecting to /superadmin');
+            navigate('/superadmin');
+            break;
+          case 'organization_admin':
+          case 'admin':
+          case 'hospital_admin':
+            console.log('🚀 Redirecting to /admin');
+            navigate('/admin');
+            break;
+          case 'doctor':
+          case 'lab_tech':
+          case 'medical_staff':
+            console.log('🚀 Redirecting to /doctor');
+            navigate('/doctor');
+            break;
+          case 'patient':
+            console.log('🚀 Redirecting to /patient');
+            navigate('/patient');
+            break;
+          default:
+            console.warn('⚠️ Unknown role:', normalizedRole, '- Redirecting to /');
+            navigate('/');
         }
       } else {
+        console.error('❌ Login failed:', result.error);
         setError(result.error || 'Invalid username or password');
       }
     } catch (err) {
+      console.error('❌ Login exception:', err);
       setError('Login failed. Please try again.');
     } finally {
       setLoading(false);

@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 import LogoutButton from './LogoutButton';
@@ -24,6 +25,7 @@ const colors = {
 
 const HospitalAdminDashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   
   // Create axios-like instance using fetch
   const axiosInstance = {
@@ -483,7 +485,12 @@ const HospitalAdminDashboard = () => {
                           : 'Never'}
                       </td>
                       <td>
-                        <button className="btn-action">View</button>
+                        <button 
+                          className="btn-action"
+                          onClick={() => navigate(`/admin/patient/${p.id}`)}
+                        >
+                          View
+                        </button>
                       </td>
                     </tr>
                   ))}
