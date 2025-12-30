@@ -10,6 +10,9 @@ import LoadingSpinner from './LoadingSpinner';
 import LogoutButton from './LogoutButton';
 import './SuperAdminDashboard.css';
 
+// API Base URL - uses environment variable for production, falls back to localhost for development
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+
 // Default color scheme
 const colors = {
   primary: '#9C2B6D',
@@ -29,7 +32,7 @@ const SuperAdminDashboard = () => {
   const axiosInstance = {
     get: async (url) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`${API_BASE_URL}${url}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -40,7 +43,7 @@ const SuperAdminDashboard = () => {
     },
     post: async (url, data) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`${API_BASE_URL}${url}`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

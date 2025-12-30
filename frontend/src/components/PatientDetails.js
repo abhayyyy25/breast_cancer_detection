@@ -9,6 +9,9 @@ import { useAuth } from '../context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 import './PatientDetails.css';
 
+// API Base URL - uses environment variable for production, falls back to localhost for development
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+
 const PatientDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -24,7 +27,7 @@ const PatientDetails = () => {
   const axiosInstance = {
     get: async (url) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`${API_BASE_URL}${url}`, {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
