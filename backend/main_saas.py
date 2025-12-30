@@ -37,15 +37,14 @@ allowed_origins = os.getenv(
     "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000"
 ).split(",")
 
+# Clean up and deduplicate origins
+allowed_origins = [origin.strip() for origin in allowed_origins if origin.strip()]
+
+print(f"[CORS] Allowed origins: {allowed_origins}")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost:3000",
-        "http://127.0.0.1:3000",
-        "http://localhost:3001",
-        "http://localhost:8001",
-        "http://127.0.0.1:8001"
-    ],
+    allow_origins=allowed_origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
