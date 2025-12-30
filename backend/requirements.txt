@@ -15,7 +15,8 @@ alembic>=1.12.0  # Database migrations
 
 # Authentication & Security
 python-jose[cryptography]>=3.3.0  # JWT tokens
-passlib[bcrypt]>=1.7.4  # Password hashing
+passlib[bcrypt]==1.7.4  # Password hashing (specific version for bcrypt 4.x compatibility)
+bcrypt==4.0.1  # Bcrypt library (compatible with passlib 1.7.4)
 python-dotenv>=1.0.0  # Environment variables
 pydantic[email]>=2.0.0  # Email validation
 pydantic-settings>=2.0.0  # Settings management
