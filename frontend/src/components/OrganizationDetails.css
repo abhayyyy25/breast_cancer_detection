@@ -35,9 +35,10 @@
 }
 
 .organization-header-info h2 {
-  color: #1F2937;
+  color: #111827;
   margin: 0 0 5px 0;
   font-size: 28px;
+  font-weight: 800;
 }
 
 .organization-type {
@@ -118,7 +119,8 @@
 .stat-content h3 {
   margin: 0;
   font-size: 32px;
-  color: #1F2937;
+  color: #111827;
+  font-weight: 800;
 }
 
 .stat-content p {
@@ -135,8 +137,9 @@
 }
 
 .staff-info h3 {
-  color: #1F2937;
+  color: #111827;
   margin: 0 0 15px 0;
+  font-weight: 800;
 }
 
 .staff-stats {
@@ -155,14 +158,15 @@
 }
 
 .staff-stat .label {
-  color: #6B7280;
+  color: #4B5563;
   font-size: 14px;
+  font-weight: 600;
 }
 
 .staff-stat .value {
-  color: #1F2937;
+  color: #111827;
   font-size: 20px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .subscription-section,

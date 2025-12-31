@@ -63,9 +63,10 @@
 }
 
 .patient-header-info h2 {
-  color: #1F2937;
+  color: #111827;
   margin: 0 0 5px 0;
   font-size: 28px;
+  font-weight: 800;
 }
 
 .patient-mrn {
@@ -132,13 +133,14 @@
 
 .info-item label {
   font-weight: 600;
-  color: #6B7280;
+  color: #4B5563;
   font-size: 14px;
 }
 
 .info-item span {
-  color: #1F2937;
+  color: #111827;
   font-size: 16px;
+  font-weight: 500;
 }
 
 .scans-table {
@@ -159,8 +161,8 @@
 
 .scans-table th {
   background: #F9FAFB;
-  font-weight: 600;
-  color: #374151;
+  font-weight: 700;
+  color: #111827;
 }
 
 .scans-table .badge {
@@ -187,8 +189,9 @@
 }
 
 .medical-section h3 {
-  color: #1F2937;
+  color: #111827;
   margin-bottom: 15px;
+  font-weight: 800;
 }
 
 .medical-section pre {

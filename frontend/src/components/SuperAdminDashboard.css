@@ -248,9 +248,9 @@
 
 .tenant-info h3 {
   font-size: 1.25rem;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0 0 0.5rem 0;
-  color: #0f172a;
+  color: #111827;
 }
 
 .org-type {
@@ -423,9 +423,9 @@
 
 .modal-header h2 {
   font-size: 1.5rem;
-  font-weight: 700;
+  font-weight: 800;
   margin: 0;
-  color: #0f172a;
+  color: #111827;
 }
 
 .close-button {
@@ -468,7 +468,7 @@
   display: block;
   font-size: 0.875rem;
   font-weight: 600;
-  color: #1e293b;
+  color: #4B5563;
   margin-bottom: 0.5rem;
   text-transform: uppercase;
   letter-spacing: 0.5px;
@@ -481,8 +481,9 @@
   border: 2px solid #e2e8f0;
   border-radius: 8px;
   background: #ffffff;
-  color: #0f172a;
+  color: #111827;
   font-size: 1rem;
+  font-weight: 500;
   transition: all 0.3s ease;
   box-sizing: border-box;
 }
@@ -499,7 +500,7 @@
 .form-group input:-webkit-autofill,
 .form-group input:-webkit-autofill:hover,
 .form-group input:-webkit-autofill:focus {
-  -webkit-text-fill-color: #0f172a !important;
+  -webkit-text-fill-color: #111827 !important;
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
   box-shadow: 0 0 0 1000px #ffffff inset !important;
   border: 2px solid #1e40af;
