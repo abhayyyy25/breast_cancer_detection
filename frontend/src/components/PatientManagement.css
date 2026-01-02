@@ -2,8 +2,8 @@
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
-  background: var(--color-bgSecondary);
-  color: var(--color-textPrimary);
+  background: #F8FAFC;
+  color: #0F172A;
 }
 
 .patient-management-header {
@@ -23,41 +23,44 @@
 
 .btn-add-patient {
   padding: 12px 24px;
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  background: #3B82F6;
   color: white;
   border: none;
-  border-radius: 12px;
+  border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 10px 25px var(--color-shadow);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-add-patient:hover {
+  background: #2563EB;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px var(--color-shadow);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 /* Alerts */
 .alert {
   padding: 16px;
-  border-radius: 12px;
+  border-radius: 8px;
   margin-bottom: 20px;
-  font-weight: 600;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+  font-weight: 500;
+  font-size: 14px;
 }
 
 .alert-error {
-  background-color: rgba(220, 38, 38, 0.1);
-  color: var(--color-error);
-  border-left: 4px solid var(--color-error);
+  background-color: #FEE2E2;
+  color: #991B1B;
+  border: 1px solid #FECACA;
+  border-left: 4px solid #DC2626;
 }
 
 .alert-success {
-  background-color: rgba(16, 185, 129, 0.15);
-  color: var(--color-success);
-  border-left: 4px solid var(--color-success);
+  background-color: #D1FAE5;
+  color: #065F46;
+  border: 1px solid #A7F3D0;
+  border-left: 4px solid #10B981;
 }
 
 /* Add Patient Form */
@@ -97,10 +100,8 @@
 .form-group label {
   margin-bottom: 6px;
   font-weight: 600;
-  color: #475569;
+  color: #111827;
   font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
 }
 
 .form-group input,
@@ -274,26 +275,30 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: var(--color-textSecondary);
+  color: #475569;
   font-size: 16px;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
 }
 
 /* Patient Card */
 .patient-card {
-  background: var(--color-bgCard);
-  border: 1px solid var(--color-border);
-  border-radius: 16px;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
+  border-radius: 12px;
   padding: 20px;
-  transition: all 0.3s ease;
-  box-shadow: 0 16px 32px var(--color-shadow);
+  transition: all 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
 .patient-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--color-border);
+  transform: translateY(-2px);
+  border-color: #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
 }
 
 .patient-card-grid {
@@ -306,15 +311,15 @@
 .patient-avatar-pill {
   width: 56px;
   height: 56px;
-  border-radius: 16px;
-  background: var(--color-bgSecondary);
-  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  background: #F1F5F9;
+  border: 2px solid #E2E8F0;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 1.25rem;
   font-weight: 700;
-  color: var(--color-textPrimary);
+  color: #0F172A;
 }
 
 .patient-card-header {
@@ -328,15 +333,17 @@
 .patient-card-header h3 {
   margin: 0;
   font-size: 20px;
-  color: var(--color-textPrimary);
+  color: #0F172A;
+  font-weight: 700;
 }
 
 .patient-mrn {
   display: inline-block;
   padding: 4px 12px;
-  background: #dbeafe;
-  color: var(--color-primary);
-  border-radius: 4px;
+  background: #EFF6FF;
+  color: #3B82F6;
+  border: 1px solid #BFDBFE;
+  border-radius: 6px;
   font-size: 13px;
   font-weight: 600;
 }
@@ -349,13 +356,13 @@
   display: flex;
   justify-content: space-between;
   padding: 8px 0;
-  color: var(--color-textSecondary);
+  color: #0F172A;
   font-size: 14px;
 }
 
 .info-label {
   font-weight: 600;
-  color: var(--color-textSecondary);
+  color: #64748B;
 }
 
 .patient-card-actions {
@@ -367,39 +374,41 @@
 .btn-select-patient {
   flex: 1;
   padding: 12px;
-  background: linear-gradient(135deg, var(--color-secondary), var(--color-primary));
+  background: #3B82F6;
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  border-radius: 8px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 8px 20px var(--color-shadow);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .btn-select-patient:hover {
+  background: #2563EB;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px var(--color-shadow);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .btn-view-history {
   flex: 1;
   padding: 12px;
-  background: linear-gradient(135deg, var(--color-info), var(--color-accent));
-  color: white;
-  border: none;
-  border-radius: 12px;
-  font-size: 16px;
+  background: #FFFFFF;
+  color: #3B82F6;
+  border: 2px solid #3B82F6;
+  border-radius: 8px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
-  box-shadow: 0 8px 20px var(--color-shadow);
 }
 
 .btn-view-history:hover {
+  background: #EFF6FF;
+  border-color: #2563EB;
+  color: #2563EB;
   transform: translateY(-1px);
-  box-shadow: 0 6px 18px var(--color-shadow);
 }
 
 /* Responsive Design */
