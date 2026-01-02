@@ -1,30 +1,21 @@
 /**
  * Hospital Admin Dashboard
  * Organization-level management for staff and patients
+ * Refactored with Enterprise Design System
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import EnterpriseLayout from './common/EnterpriseLayout';
+import EnterpriseTable from './common/EnterpriseTable';
+import EnterpriseMetricTile from './common/EnterpriseMetricTile';
 import LoadingSpinner from './LoadingSpinner';
-import LogoutButton from './LogoutButton';
+import '../styles/enterpriseDesignSystem.css';
 import './HospitalAdminDashboard.css';
 
-// API Base URL - uses environment variable for production, falls back to localhost for development
+// API Base URL
 const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
-
-// Default color scheme
-const colors = {
-  primary: '#9C2B6D',
-  secondary: '#6B21A8',
-  accent: '#D946A6',
-  success: '#10B981',
-  error: '#DC2626',
-  warning: '#F59E0B',
-  info: '#3B82F6',
-  benign: '#10B981',
-  malignant: '#DC2626'
-};
 
 const HospitalAdminDashboard = () => {
   const { user } = useAuth();
@@ -102,6 +93,7 @@ const HospitalAdminDashboard = () => {
       return { data: await response.json() };
     }
   };
+
   const [dashboardData, setDashboardData] = useState(null);
   const [users, setUsers] = useState([]);
   const [patients, setPatients] = useState([]);
@@ -160,27 +152,21 @@ const HospitalAdminDashboard = () => {
   const handleCreateStaff = async (e) => {
     e.preventDefault();
     
-    // Validate password length
     if (newStaff.password.length < 6) {
       alert('Password must be at least 6 characters long');
       return;
     }
     
-    console.log('📤 Sending staff creation request with data:', JSON.stringify(newStaff, null, 2));
-    
     try {
       const response = await axiosInstance.post('/hospital-admin/staff', newStaff);
-      
-      console.log('✅ Staff created successfully:', response.data);
+      console.log('Staff created successfully:', response.data);
       
       setShowCreateStaffModal(false);
       fetchUsers();
       fetchDashboardData();
       
-      // Simple success notification
-      alert(`✅ Staff member "${newStaff.full_name}" created successfully!`);
+      alert(`Staff member "${newStaff.full_name}" created successfully`);
       
-      // Reset form
       setNewStaff({
         email: '',
         full_name: '',
@@ -194,19 +180,13 @@ const HospitalAdminDashboard = () => {
       });
       setShowStaffPassword(false);
     } catch (error) {
-      console.error('❌ Error creating staff member:', error);
-      console.error('Server Error Details:', error.response?.data || error.message);
-      console.error('Response Status:', error.response?.status);
-      console.error('Full Error Object:', error);
-      
-      // Show detailed error message
+      console.error('Error creating staff member:', error);
       const errorMessage = error.response?.data?.detail 
         || (error.response?.data?.message)
         || (typeof error.response?.data === 'string' ? error.response?.data : null)
         || error.message 
         || 'Unknown error';
-      
-      alert(`Failed to create staff member:\n\n${errorMessage}`);
+      alert(`Failed to create staff member: ${errorMessage}`);
     }
   };
 
@@ -223,446 +203,481 @@ const HospitalAdminDashboard = () => {
     }
   };
 
+  const navigationItems = [
+    { id: 'dashboard', label: 'Dashboard', icon: '■', active: activeTab === 'overview', onClick: () => setActiveTab('overview') },
+    { id: 'staff', label: 'Staff', icon: '⬒', active: activeTab === 'staff', onClick: () => setActiveTab('staff'), badge: users.filter((u) => u.role !== 'patient').length },
+    { id: 'patients', label: 'Patients', icon: '▦', active: activeTab === 'patients', onClick: () => setActiveTab('patients'), badge: patients.length },
+  ];
+
+  const staffColumns = [
+    {
+      header: 'Name',
+      accessor: 'full_name',
+      render: (row) => (
+        <div style={{ display: 'flex', alignItems: 'center', gap: 'var(--eds-space-2)' }}>
+          <div style={{
+            width: '32px',
+            height: '32px',
+            borderRadius: '50%',
+            background: 'var(--eds-color-primary)',
+            color: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: 'var(--eds-font-size-sm)',
+            fontWeight: 600
+          }}>
+            {row.full_name.charAt(0)}
+          </div>
+          <span style={{ fontWeight: 500 }}>{row.full_name}</span>
+        </div>
+      ),
+    },
+    {
+      header: 'Role',
+      accessor: 'role',
+      width: '120px',
+      render: (row) => (
+        <span className="eds-badge eds-badge-neutral">
+          {row.role.replace('_', ' ')}
+        </span>
+      ),
+    },
+    {
+      header: 'Department',
+      accessor: 'department',
+      width: '150px',
+      render: (row) => <span className="eds-text-small">{row.department || '-'}</span>,
+    },
+    {
+      header: 'License #',
+      accessor: 'license_number',
+      width: '150px',
+      render: (row) => <span className="eds-text-mono">{row.license_number || '-'}</span>,
+    },
+    {
+      header: 'Email',
+      accessor: 'email',
+      render: (row) => <span className="eds-text-small">{row.email}</span>,
+    },
+    {
+      header: 'Status',
+      accessor: 'is_active',
+      width: '100px',
+      render: (row) => (
+        <span className={`eds-badge ${row.is_active ? 'eds-badge-success' : 'eds-badge-error'}`}>
+          {row.is_active ? 'Active' : 'Inactive'}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'id',
+      width: '120px',
+      render: (row) => (
+        <button
+          className="eds-button eds-button-sm eds-button-danger"
+          onClick={(e) => {
+            e.stopPropagation();
+            handleDeactivateUser(row.id, row.full_name);
+          }}
+        >
+          Deactivate
+        </button>
+      ),
+    },
+  ];
+
+  const patientColumns = [
+    {
+      header: 'MRN',
+      accessor: 'mrn',
+      width: '120px',
+      render: (row) => <span className="eds-text-mono" style={{ fontWeight: 600 }}>{row.mrn}</span>,
+    },
+    {
+      header: 'Name',
+      accessor: 'full_name',
+      render: (row) => <span style={{ fontWeight: 500 }}>{row.full_name}</span>,
+    },
+    {
+      header: 'Gender',
+      accessor: 'gender',
+      width: '100px',
+    },
+    {
+      header: 'DOB',
+      accessor: 'date_of_birth',
+      width: '120px',
+      render: (row) => <span className="eds-text-small">{new Date(row.date_of_birth).toLocaleDateString()}</span>,
+    },
+    {
+      header: 'Phone',
+      accessor: 'phone',
+      width: '150px',
+      render: (row) => <span className="eds-text-small">{row.phone}</span>,
+    },
+    {
+      header: 'Last Visit',
+      accessor: 'last_visit_date',
+      width: '120px',
+      render: (row) => (
+        <span className="eds-text-small">
+          {row.last_visit_date ? new Date(row.last_visit_date).toLocaleDateString() : 'Never'}
+        </span>
+      ),
+    },
+    {
+      header: 'Actions',
+      accessor: 'id',
+      width: '100px',
+      render: (row) => (
+        <button
+          className="eds-button eds-button-sm eds-button-secondary"
+          onClick={(e) => {
+            e.stopPropagation();
+            navigate(`/admin/patient/${row.id}`);
+          }}
+        >
+          View
+        </button>
+      ),
+    },
+  ];
+
   if (loading) {
     return <LoadingSpinner message="Loading Hospital Admin Dashboard..." />;
   }
 
   return (
-    <div className="hospital-admin-dashboard">
-      {/* Header */}
-      <div className="dashboard-header">
-        <div>
-          <h1>🏥 {dashboardData?.tenant_name || 'Hospital'} Admin</h1>
-          <p>Manage staff, patients, and organization operations</p>
-        </div>
-        <div className="header-actions">
-          <button className="btn-add-user" onClick={() => setShowCreateStaffModal(true)}>
-            👨‍⚕️ Register Staff
-          </button>
-          <LogoutButton variant="sidebar" />
-        </div>
-      </div>
-
-      {/* Statistics Cards */}
+    <EnterpriseLayout
+      user={user}
+      pageTitle={dashboardData?.tenant_name || 'Hospital Administration'}
+      navigationItems={navigationItems}
+    >
+      {/* Metrics */}
       {dashboardData && (
-        <div className="stats-grid">
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: colors.primary }}>
-              👨‍⚕️
-            </div>
-            <div className="stat-content">
-              <h3>{dashboardData.total_doctors}</h3>
-              <p>Doctors</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: colors.secondary }}>
-              🔬
-            </div>
-            <div className="stat-content">
-              <h3>{dashboardData.total_lab_techs}</h3>
-              <p>Lab Technicians</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: colors.accent }}>
-              👥
-            </div>
-            <div className="stat-content">
-              <h3>{dashboardData.total_patients}</h3>
-              <p>Patients</p>
-            </div>
-          </div>
-
-          <div className="stat-card">
-            <div className="stat-icon" style={{ background: colors.info }}>
-              📊
-            </div>
-            <div className="stat-content">
-              <h3>{dashboardData.total_scans}</h3>
-              <p>Total Scans</p>
-              <span className="stat-detail">{dashboardData.scans_today} today</span>
-            </div>
-          </div>
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+          gap: 'var(--eds-space-4)',
+          marginBottom: 'var(--eds-space-8)'
+        }}>
+          <EnterpriseMetricTile
+            label="Doctors"
+            value={dashboardData.total_doctors}
+          />
+          <EnterpriseMetricTile
+            label="Lab Technicians"
+            value={dashboardData.total_lab_techs}
+          />
+          <EnterpriseMetricTile
+            label="Patients"
+            value={dashboardData.total_patients}
+          />
+          <EnterpriseMetricTile
+            label="Total Scans"
+            value={dashboardData.total_scans}
+            subtitle={`${dashboardData.scans_today} today`}
+          />
         </div>
       )}
 
       {/* Usage Meter */}
       {dashboardData && (
-        <div className="usage-meter">
-          <div className="usage-header">
-            <h3>Monthly Scan Usage</h3>
-            <span className="usage-text">
-              {dashboardData.scans_this_month} / {dashboardData.monthly_scan_limit} scans
+        <div className="eds-card" style={{ marginBottom: 'var(--eds-space-8)' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 'var(--eds-space-4)' }}>
+            <h3 className="eds-card-title">Monthly Scan Usage</h3>
+            <span className="eds-text-mono">
+              {dashboardData.scans_this_month} / {dashboardData.monthly_scan_limit}
             </span>
           </div>
-          <div className="progress-bar">
-            <div
-              className="progress-fill"
-              style={{
-                width: `${Math.min(dashboardData.scan_limit_usage_percentage, 100)}%`,
-                background:
-                  dashboardData.scan_limit_usage_percentage > 90
-                    ? colors.error
-                    : dashboardData.scan_limit_usage_percentage > 75
-                    ? colors.warning
-                    : colors.success,
-              }}
-            />
+          <div style={{
+            width: '100%',
+            height: '8px',
+            background: 'var(--eds-color-surface-raised)',
+            borderRadius: '4px',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              width: `${Math.min(dashboardData.scan_limit_usage_percentage, 100)}%`,
+              height: '100%',
+              background: dashboardData.scan_limit_usage_percentage > 90
+                ? 'var(--eds-color-error)'
+                : dashboardData.scan_limit_usage_percentage > 75
+                ? 'var(--eds-color-warning)'
+                : 'var(--eds-color-success)',
+              transition: 'width var(--eds-transition-base)'
+            }} />
           </div>
-          <p className="usage-percentage">
+          <div className="eds-text-small" style={{ marginTop: 'var(--eds-space-2)' }}>
             {dashboardData.scan_limit_usage_percentage.toFixed(1)}% used
-          </p>
+          </div>
         </div>
       )}
 
-      {/* Tabs */}
-      <div className="tabs-container">
-        <div className="tabs">
-          <button
-            className={`tab ${activeTab === 'overview' ? 'active' : ''}`}
-            onClick={() => setActiveTab('overview')}
-          >
-            Overview
-          </button>
-          <button
-            className={`tab ${activeTab === 'staff' ? 'active' : ''}`}
-            onClick={() => setActiveTab('staff')}
-          >
-            Staff ({users.filter((u) => u.role !== 'patient').length})
-          </button>
-          <button
-            className={`tab ${activeTab === 'patients' ? 'active' : ''}`}
-            onClick={() => setActiveTab('patients')}
-          >
-            Patients ({patients.length})
-          </button>
-        </div>
-      </div>
-
       {/* Tab Content */}
-      <div className="tab-content">
-        {activeTab === 'overview' && dashboardData && (
-          <div className="overview-tab">
-            <div className="section">
-              <h2>Recent Scans</h2>
-              <div className="scans-list">
-                {dashboardData.recent_scans.slice(0, 5).map((scan) => (
-                  <div key={scan.id} className="scan-item">
-                    <div className="scan-info">
-                      <span className="scan-number">{scan.scan_number}</span>
-                      <span className="scan-date">
-                        {new Date(scan.scan_date).toLocaleDateString()}
-                      </span>
-                    </div>
-                    <div className="scan-result">
-                      {scan.prediction && (
-                        <span
-                          className={`prediction-badge ${scan.prediction}`}
-                          style={{
-                            background:
-                              scan.prediction === 'benign'
-                                ? `${colors.benign}20`
-                                : `${colors.malignant}20`,
-                            color:
-                              scan.prediction === 'benign'
-                                ? colors.benign
-                                : colors.malignant,
-                          }}
-                        >
-                          {scan.prediction}
-                        </span>
-                      )}
-                      <span className={`status-badge ${scan.status}`}>
-                        {scan.status}
-                      </span>
-                    </div>
+      {activeTab === 'overview' && dashboardData && (
+        <div>
+          <div className="eds-card" style={{ marginBottom: 'var(--eds-space-6)' }}>
+            <div className="eds-card-header">
+              <h3 className="eds-card-title">Recent Scans</h3>
+            </div>
+            <div style={{ marginTop: 'var(--eds-space-4)' }}>
+              <EnterpriseTable
+                columns={[
+                  { header: 'Scan #', accessor: 'scan_number', width: '140px', render: (row) => <span className="eds-text-mono">{row.scan_number}</span> },
+                  { header: 'Date', accessor: 'scan_date', width: '120px', render: (row) => <span className="eds-text-small">{new Date(row.scan_date).toLocaleDateString()}</span> },
+                  { header: 'Prediction', accessor: 'prediction', width: '120px', render: (row) => row.prediction ? <span className={`eds-badge ${row.prediction === 'benign' ? 'eds-badge-success' : 'eds-badge-error'}`}>{row.prediction}</span> : <span className="eds-text-muted">Pending</span> },
+                  { header: 'Status', accessor: 'status', width: '120px', render: (row) => <span className="eds-badge eds-badge-neutral">{row.status}</span> },
+                ]}
+                data={dashboardData.recent_scans.slice(0, 5)}
+                emptyMessage="No recent scans"
+              />
+            </div>
+          </div>
+
+          <div className="eds-card">
+            <div className="eds-card-header">
+              <h3 className="eds-card-title">Active Staff</h3>
+            </div>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+              gap: 'var(--eds-space-4)',
+              marginTop: 'var(--eds-space-4)'
+            }}>
+              {dashboardData.active_users.slice(0, 6).map((u) => (
+                <div key={u.id} style={{
+                  padding: 'var(--eds-space-4)',
+                  background: 'var(--eds-color-surface-raised)',
+                  border: '1px solid var(--eds-color-border)',
+                  borderRadius: 'var(--eds-radius-md)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: 'var(--eds-space-3)'
+                }}>
+                  <div style={{
+                    width: '40px',
+                    height: '40px',
+                    borderRadius: '50%',
+                    background: 'var(--eds-color-primary)',
+                    color: 'white',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 'var(--eds-font-size-md)',
+                    fontWeight: 600,
+                    flexShrink: 0
+                  }}>
+                    {u.full_name.charAt(0)}
                   </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="section">
-              <h2>Active Staff</h2>
-              <div className="users-grid">
-                {dashboardData.active_users.slice(0, 6).map((u) => (
-                  <div key={u.id} className="user-card-mini">
-                    <div className="user-avatar">{u.full_name.charAt(0)}</div>
-                    <div className="user-info-mini">
-                      <h4>{u.full_name}</h4>
-                      <p>{u.role.replace('_', ' ')}</p>
-                      {u.department && <span>{u.department}</span>}
-                    </div>
+                  <div style={{ minWidth: 0 }}>
+                    <div style={{ fontWeight: 500, fontSize: 'var(--eds-font-size-sm)' }}>{u.full_name}</div>
+                    <div className="eds-text-small">{u.role.replace('_', ' ')}</div>
+                    {u.department && <div className="eds-text-small" style={{ color: 'var(--eds-color-text-muted)' }}>{u.department}</div>}
                   </div>
-                ))}
-              </div>
+                </div>
+              ))}
             </div>
           </div>
-        )}
+        </div>
+      )}
 
-        {activeTab === 'staff' && (
-          <div className="staff-tab">
-            <div className="users-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                    <th>Department</th>
-                    <th>License #</th>
-                    <th>Email</th>
-                    <th>Status</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {users
-                    .filter((u) => u.role !== 'patient')
-                    .map((u) => (
-                      <tr key={u.id}>
-                        <td>
-                          <div className="user-cell">
-                            <div className="user-avatar-small">
-                              {u.full_name.charAt(0)}
-                            </div>
-                            <span>{u.full_name}</span>
-                          </div>
-                        </td>
-                        <td>
-                          <span className="role-badge">{u.role.replace('_', ' ')}</span>
-                        </td>
-                        <td>{u.department || '-'}</td>
-                        <td>{u.license_number || '-'}</td>
-                        <td>{u.email}</td>
-                        <td>
-                          <span className={`status-dot ${u.is_active ? 'active' : 'inactive'}`}>
-                            {u.is_active ? 'Active' : 'Inactive'}
-                          </span>
-                        </td>
-                        <td>
-                          <button
-                            className="btn-action"
-                            onClick={() => handleDeactivateUser(u.id, u.full_name)}
-                          >
-                            Deactivate
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                </tbody>
-              </table>
-            </div>
+      {activeTab === 'staff' && (
+        <div className="eds-card">
+          <div className="eds-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <h3 className="eds-card-title">Staff Members</h3>
+            <button
+              className="eds-button eds-button-primary"
+              onClick={() => setShowCreateStaffModal(true)}
+            >
+              Register Staff
+            </button>
           </div>
-        )}
-
-        {activeTab === 'patients' && (
-          <div className="patients-tab">
-            <div className="patients-table">
-              <table>
-                <thead>
-                  <tr>
-                    <th>MRN</th>
-                    <th>Name</th>
-                    <th>Gender</th>
-                    <th>DOB</th>
-                    <th>Phone</th>
-                    <th>Last Visit</th>
-                    <th>Actions</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {patients.map((p) => (
-                    <tr key={p.id}>
-                      <td>
-                        <span className="mrn-badge">{p.mrn}</span>
-                      </td>
-                      <td>{p.full_name}</td>
-                      <td>{p.gender}</td>
-                      <td>{new Date(p.date_of_birth).toLocaleDateString()}</td>
-                      <td>{p.phone}</td>
-                      <td>
-                        {p.last_visit_date
-                          ? new Date(p.last_visit_date).toLocaleDateString()
-                          : 'Never'}
-                      </td>
-                      <td>
-                        <button 
-                          className="btn-action"
-                          onClick={() => navigate(`/admin/patient/${p.id}`)}
-                        >
-                          View
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+          <div style={{ marginTop: 'var(--eds-space-4)' }}>
+            <EnterpriseTable
+              columns={staffColumns}
+              data={users.filter((u) => u.role !== 'patient')}
+              emptyMessage="No staff members found"
+            />
           </div>
-        )}
-      </div>
+        </div>
+      )}
 
-      {/* Register Staff Modal - Admin can ONLY register Doctors & Lab Techs */}
+      {activeTab === 'patients' && (
+        <div className="eds-card">
+          <div className="eds-card-header">
+            <h3 className="eds-card-title">Patients</h3>
+          </div>
+          <div style={{ marginTop: 'var(--eds-space-4)' }}>
+            <EnterpriseTable
+              columns={patientColumns}
+              data={patients}
+              emptyMessage="No patients found"
+            />
+          </div>
+        </div>
+      )}
+
+      {/* Register Staff Modal */}
       {showCreateStaffModal && (
-        <div className="modal-overlay" onClick={() => setShowCreateStaffModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2>👨‍⚕️ Register Staff Member</h2>
-              <button className="close-button" onClick={() => setShowCreateStaffModal(false)}>
+        <div className="eds-modal-overlay" onClick={() => setShowCreateStaffModal(false)}>
+          <div className="eds-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="eds-modal-header">
+              <h2 className="eds-modal-title">Register Staff Member</h2>
+              <button className="eds-modal-close" onClick={() => setShowCreateStaffModal(false)}>
                 ×
               </button>
             </div>
-            <form onSubmit={handleCreateStaff} className="user-form">
-              <div className="form-group">
-                <label>Full Name *</label>
-                <input
-                  type="text"
-                  value={newStaff.full_name}
-                  onChange={(e) => setNewStaff({ ...newStaff, full_name: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Email *</label>
+            <form onSubmit={handleCreateStaff}>
+              <div className="eds-modal-body">
+                <div className="eds-form-group">
+                  <label className="eds-form-label">Full Name *</label>
                   <input
-                    type="email"
-                    value={newStaff.email}
-                    onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
+                    className="eds-form-input"
+                    type="text"
+                    value={newStaff.full_name}
+                    onChange={(e) => setNewStaff({ ...newStaff, full_name: e.target.value })}
                     required
                   />
                 </div>
-                <div className="form-group">
-                  <label>Phone</label>
-                  <input
-                    type="tel"
-                    value={newStaff.phone}
-                    onChange={(e) => setNewStaff({ ...newStaff, phone: e.target.value })}
-                  />
-                </div>
-              </div>
 
-              <div className="form-row">
-                <div className="form-group">
-                  <label>Role *</label>
-                  <select
-                    value={newStaff.role}
-                    onChange={(e) => setNewStaff({ ...newStaff, role: e.target.value })}
-                  >
-                    <option value="doctor">Doctor</option>
-                    <option value="lab_tech">Lab Technician</option>
-                  </select>
-                </div>
-                <div className="form-group">
-                  <label>Department</label>
-                  <input
-                    type="text"
-                    value={newStaff.department}
-                    onChange={(e) => setNewStaff({ ...newStaff, department: e.target.value })}
-                    placeholder="e.g., Radiology, Oncology"
-                  />
-                </div>
-              </div>
-
-              <div className="form-row">
-                <div className="form-group">
-                  <label>License Number</label>
-                  <input
-                    type="text"
-                    value={newStaff.license_number}
-                    onChange={(e) => setNewStaff({ ...newStaff, license_number: e.target.value })}
-                    placeholder="Medical license #"
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Specialization</label>
-                  <input
-                    type="text"
-                    value={newStaff.specialization}
-                    onChange={(e) => setNewStaff({ ...newStaff, specialization: e.target.value })}
-                    placeholder="e.g., Breast Cancer Specialist"
-                  />
-                </div>
-              </div>
-
-              {/* Login Credentials Section */}
-              <div style={{ 
-                borderTop: '2px solid #e2e8f0', 
-                marginTop: '1.5rem', 
-                paddingTop: '1.5rem' 
-              }}>
-                <h3 style={{ 
-                  fontSize: '0.95rem', 
-                  fontWeight: '600', 
-                  marginBottom: '1rem',
-                  color: '#475569'
-                }}>
-                  🔐 Login Credentials
-                </h3>
-
-                <div className="form-row">
-                  <div className="form-group">
-                    <label>Username *</label>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
+                  <div className="eds-form-group">
+                    <label className="eds-form-label">Email *</label>
                     <input
-                      type="text"
-                      value={newStaff.username}
-                      onChange={(e) => setNewStaff({ ...newStaff, username: e.target.value })}
-                      placeholder="username"
+                      className="eds-form-input"
+                      type="email"
+                      value={newStaff.email}
+                      onChange={(e) => setNewStaff({ ...newStaff, email: e.target.value })}
                       required
                     />
                   </div>
+                  <div className="eds-form-group">
+                    <label className="eds-form-label">Phone</label>
+                    <input
+                      className="eds-form-input"
+                      type="tel"
+                      value={newStaff.phone}
+                      onChange={(e) => setNewStaff({ ...newStaff, phone: e.target.value })}
+                    />
+                  </div>
+                </div>
 
-                  <div className="form-group">
-                    <label>Password *</label>
-                    <div style={{ position: 'relative' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
+                  <div className="eds-form-group">
+                    <label className="eds-form-label">Role *</label>
+                    <select
+                      className="eds-form-select"
+                      value={newStaff.role}
+                      onChange={(e) => setNewStaff({ ...newStaff, role: e.target.value })}
+                    >
+                      <option value="doctor">Doctor</option>
+                      <option value="lab_tech">Lab Technician</option>
+                    </select>
+                  </div>
+                  <div className="eds-form-group">
+                    <label className="eds-form-label">Department</label>
+                    <input
+                      className="eds-form-input"
+                      type="text"
+                      value={newStaff.department}
+                      onChange={(e) => setNewStaff({ ...newStaff, department: e.target.value })}
+                      placeholder="e.g., Radiology, Oncology"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
+                  <div className="eds-form-group">
+                    <label className="eds-form-label">License Number</label>
+                    <input
+                      className="eds-form-input"
+                      type="text"
+                      value={newStaff.license_number}
+                      onChange={(e) => setNewStaff({ ...newStaff, license_number: e.target.value })}
+                      placeholder="Medical license #"
+                    />
+                  </div>
+                  <div className="eds-form-group">
+                    <label className="eds-form-label">Specialization</label>
+                    <input
+                      className="eds-form-input"
+                      type="text"
+                      value={newStaff.specialization}
+                      onChange={(e) => setNewStaff({ ...newStaff, specialization: e.target.value })}
+                      placeholder="e.g., Breast Cancer Specialist"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ 
+                  borderTop: '1px solid var(--eds-color-border)', 
+                  marginTop: 'var(--eds-space-6)', 
+                  paddingTop: 'var(--eds-space-6)' 
+                }}>
+                  <h4 style={{ fontSize: 'var(--eds-font-size-md)', fontWeight: 600, marginBottom: 'var(--eds-space-4)' }}>
+                    Login Credentials
+                  </h4>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
+                    <div className="eds-form-group">
+                      <label className="eds-form-label">Username *</label>
                       <input
-                        type={showStaffPassword ? 'text' : 'password'}
-                        value={newStaff.password}
-                        onChange={(e) => setNewStaff({ ...newStaff, password: e.target.value })}
-                        placeholder="Min 6 characters"
+                        className="eds-form-input"
+                        type="text"
+                        value={newStaff.username}
+                        onChange={(e) => setNewStaff({ ...newStaff, username: e.target.value })}
+                        placeholder="username"
                         required
-                        minLength={6}
-                        style={{ paddingRight: '40px' }}
                       />
-                      <button
-                        type="button"
-                        onClick={() => setShowStaffPassword(!showStaffPassword)}
-                        style={{
-                          position: 'absolute',
-                          right: '10px',
-                          top: '50%',
-                          transform: 'translateY(-50%)',
-                          background: 'none',
-                          border: 'none',
-                          cursor: 'pointer',
-                          fontSize: '1.2rem',
-                          color: '#64748b',
-                          padding: '0',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center'
-                        }}
-                        title={showStaffPassword ? 'Hide password' : 'Show password'}
-                      >
-                        {showStaffPassword ? '👁️' : '👁️‍🗨️'}
-                      </button>
+                    </div>
+
+                    <div className="eds-form-group">
+                      <label className="eds-form-label">Password *</label>
+                      <div style={{ position: 'relative' }}>
+                        <input
+                          className="eds-form-input"
+                          type={showStaffPassword ? 'text' : 'password'}
+                          value={newStaff.password}
+                          onChange={(e) => setNewStaff({ ...newStaff, password: e.target.value })}
+                          placeholder="Min 6 characters"
+                          required
+                          minLength={6}
+                          style={{ paddingRight: '40px' }}
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setShowStaffPassword(!showStaffPassword)}
+                          style={{
+                            position: 'absolute',
+                            right: '10px',
+                            top: '50%',
+                            transform: 'translateY(-50%)',
+                            background: 'none',
+                            border: 'none',
+                            cursor: 'pointer',
+                            color: 'var(--eds-color-text-muted)'
+                          }}
+                        >
+                          {showStaffPassword ? 'Hide' : 'Show'}
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="form-actions">
+              <div className="eds-modal-footer">
                 <button
                   type="button"
-                  className="btn-cancel"
+                  className="eds-button eds-button-secondary"
                   onClick={() => setShowCreateStaffModal(false)}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn-submit">
+                <button type="submit" className="eds-button eds-button-primary">
                   Register Staff
                 </button>
               </div>
@@ -670,12 +685,8 @@ const HospitalAdminDashboard = () => {
           </div>
         </div>
       )}
-      
-      {/* Note: Admins can ONLY register Staff (Doctors & Lab Techs).
-          Patient registration is done by Doctors in their dashboard. */}
-    </div>
+    </EnterpriseLayout>
   );
 };
 
 export default HospitalAdminDashboard;
-

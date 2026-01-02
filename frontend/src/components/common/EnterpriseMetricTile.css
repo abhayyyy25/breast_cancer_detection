@@ -1,0 +1,55 @@
+/**
+ * Enterprise Metric Tile Styles - LIGHT THEME
+ */
+
+.eds-metric-tile {
+  background-color: white;
+  border: 1px solid var(--eds-color-border);
+  border-radius: var(--eds-radius-lg);
+  padding: var(--eds-space-5);
+  transition: all var(--eds-transition-fast);
+  box-shadow: var(--eds-shadow-sm);
+}
+
+.eds-metric-tile:hover {
+  border-color: var(--eds-color-primary-light);
+  box-shadow: var(--eds-shadow-md);
+}
+
+.eds-metric-label {
+  font-size: var(--eds-font-size-sm);
+  font-weight: var(--eds-font-weight-medium);
+  color: var(--eds-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--eds-space-3);
+}
+
+.eds-metric-value {
+  font-size: var(--eds-font-size-3xl);
+  font-weight: var(--eds-font-weight-bold);
+  color: var(--eds-color-text-primary);
+  line-height: 1.2;
+  display: flex;
+  align-items: baseline;
+  gap: var(--eds-space-2);
+}
+
+.eds-metric-trend {
+  font-size: var(--eds-font-size-base);
+  font-weight: var(--eds-font-weight-medium);
+}
+
+.eds-metric-trend.up {
+  color: var(--eds-color-success);
+}
+
+.eds-metric-trend.down {
+  color: var(--eds-color-error);
+}
+
+.eds-metric-subtitle {
+  font-size: var(--eds-font-size-sm);
+  color: var(--eds-color-text-secondary);
+  margin-top: var(--eds-space-2);
+}

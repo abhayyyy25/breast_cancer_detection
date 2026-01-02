@@ -1,0 +1,57 @@
+/**
+ * Enterprise Header Styles - LIGHT THEME
+ */
+
+.eds-header {
+  height: var(--eds-header-height);
+  background-color: white;
+  border-bottom: 1px solid var(--eds-color-border);
+  display: flex;
+  align-items: center;
+  padding: 0 var(--eds-space-6);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: var(--eds-shadow-sm);
+}
+
+.eds-header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  max-width: var(--eds-content-max-width);
+  margin: 0 auto;
+}
+
+.eds-header-left {
+  flex: 1;
+  min-width: 0;
+}
+
+.eds-header-title {
+  font-size: var(--eds-font-size-2xl);
+  font-weight: var(--eds-font-weight-semibold);
+  color: var(--eds-color-text-primary);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eds-header-right {
+  display: flex;
+  align-items: center;
+  gap: var(--eds-space-3);
+  flex-shrink: 0;
+}
+
+@media (max-width: 768px) {
+  .eds-header {
+    padding: 0 var(--eds-space-4);
+  }
+  
+  .eds-header-title {
+    font-size: var(--eds-font-size-xl);
+  }
+}

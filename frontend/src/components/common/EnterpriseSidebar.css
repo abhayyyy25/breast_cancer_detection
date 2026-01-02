@@ -1,0 +1,191 @@
+/**
+ * Enterprise Sidebar Styles - LIGHT THEME
+ */
+
+.eds-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: var(--eds-sidebar-width);
+  background-color: white;
+  border-right: 1px solid var(--eds-color-border);
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+}
+
+/* Header */
+.eds-sidebar-header {
+  padding: var(--eds-space-6) var(--eds-space-5);
+  border-bottom: 1px solid var(--eds-color-border);
+}
+
+.eds-sidebar-brand-text {
+  font-size: var(--eds-font-size-md);
+  font-weight: var(--eds-font-weight-semibold);
+  color: var(--eds-color-text-primary);
+  line-height: 1.4;
+}
+
+.eds-sidebar-brand-version {
+  font-size: var(--eds-font-size-xs);
+  color: var(--eds-color-text-muted);
+  margin-top: var(--eds-space-1);
+}
+
+/* Navigation */
+.eds-sidebar-nav {
+  flex: 1;
+  padding: var(--eds-space-4) var(--eds-space-3);
+  overflow-y: auto;
+}
+
+.eds-sidebar-nav-item {
+  display: flex;
+  align-items: center;
+  gap: var(--eds-space-3);
+  width: 100%;
+  padding: 10px var(--eds-space-4);
+  margin-bottom: var(--eds-space-1);
+  font-size: var(--eds-font-size-base);
+  font-weight: var(--eds-font-weight-medium);
+  color: var(--eds-color-text-secondary);
+  background: none;
+  border: none;
+  border-radius: var(--eds-radius-md);
+  cursor: pointer;
+  transition: all var(--eds-transition-fast);
+  text-align: left;
+  position: relative;
+}
+
+.eds-sidebar-nav-item:hover:not(:disabled) {
+  background-color: var(--eds-color-surface-hover);
+  color: var(--eds-color-text-primary);
+}
+
+.eds-sidebar-nav-item.active {
+  background-color: var(--eds-color-primary-subtle);
+  color: var(--eds-color-primary);
+  font-weight: var(--eds-font-weight-semibold);
+}
+
+.eds-sidebar-nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background-color: var(--eds-color-primary);
+  border-radius: 0 2px 2px 0;
+}
+
+.eds-sidebar-nav-item:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.eds-sidebar-nav-icon {
+  font-size: var(--eds-font-size-lg);
+  width: 20px;
+  text-align: center;
+  flex-shrink: 0;
+}
+
+.eds-sidebar-nav-label {
+  flex: 1;
+}
+
+.eds-sidebar-nav-badge {
+  padding: 2px 8px;
+  font-size: var(--eds-font-size-xs);
+  font-weight: var(--eds-font-weight-semibold);
+  background-color: var(--eds-color-primary);
+  color: white;
+  border-radius: 12px;
+  line-height: 1.4;
+}
+
+/* Footer */
+.eds-sidebar-footer {
+  padding: var(--eds-space-4);
+  border-top: 1px solid var(--eds-color-border);
+}
+
+.eds-sidebar-user {
+  display: flex;
+  align-items: center;
+  gap: var(--eds-space-3);
+  padding: var(--eds-space-3);
+  margin-bottom: var(--eds-space-3);
+  border-radius: var(--eds-radius-md);
+  background-color: var(--eds-color-surface-hover);
+}
+
+.eds-sidebar-user-avatar {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--eds-color-primary);
+  color: white;
+  border-radius: 50%;
+  font-size: var(--eds-font-size-base);
+  font-weight: var(--eds-font-weight-semibold);
+  flex-shrink: 0;
+}
+
+.eds-sidebar-user-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.eds-sidebar-user-name {
+  font-size: var(--eds-font-size-sm);
+  font-weight: var(--eds-font-weight-medium);
+  color: var(--eds-color-text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.eds-sidebar-user-role {
+  font-size: var(--eds-font-size-xs);
+  color: var(--eds-color-text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2px;
+}
+
+.eds-sidebar-logout {
+  width: 100%;
+  padding: 10px var(--eds-space-3);
+  font-size: var(--eds-font-size-sm);
+  font-weight: var(--eds-font-weight-medium);
+  color: var(--eds-color-text-secondary);
+  background: white;
+  border: 1px solid var(--eds-color-border);
+  border-radius: var(--eds-radius-md);
+  cursor: pointer;
+  transition: all var(--eds-transition-fast);
+}
+
+.eds-sidebar-logout:hover {
+  background-color: var(--eds-color-surface-hover);
+  color: var(--eds-color-text-primary);
+  border-color: var(--eds-color-text-muted);
+}
+
+@media (max-width: 1024px) {
+  .eds-sidebar {
+    transform: translateX(-100%);
+    transition: transform var(--eds-transition-base);
+  }
+  
+  .eds-sidebar.mobile-open {
+    transform: translateX(0);
+  }
+}

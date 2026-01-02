@@ -1,0 +1,39 @@
+/**
+ * Enterprise Layout Styles - LIGHT THEME
+ */
+
+.eds-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: var(--eds-color-background);
+}
+
+.eds-layout-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  margin-left: var(--eds-sidebar-width);
+  min-width: 0;
+  background-color: var(--eds-color-background);
+}
+
+.eds-layout-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: var(--eds-space-8);
+}
+
+.eds-layout-content-inner {
+  max-width: var(--eds-content-max-width);
+  margin: 0 auto;
+}
+
+@media (max-width: 1024px) {
+  .eds-layout-main {
+    margin-left: 0;
+  }
+  
+  .eds-layout-content {
+    padding: var(--eds-space-6);
+  }
+}
