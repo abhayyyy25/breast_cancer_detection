@@ -121,7 +121,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
     <div className="patient-registration">
       <div className="registration-header">
         <div>
-          <h2>👤 Register New Patient</h2>
+          <h2>Register New Patient</h2>
           <p>Complete patient information for medical records</p>
         </div>
         {onBack && (
@@ -321,7 +321,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
 
         {/* Patient Login Credentials */}
         <div className="form-section">
-          <h3>🔐 Patient Portal Login Credentials</h3>
+          <h3>Patient Portal Login Credentials</h3>
           
           <div className="form-row">
             <div className="form-group">

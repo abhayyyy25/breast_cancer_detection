@@ -120,8 +120,8 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #1e40af;
-  box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
   background: #ffffff;
 }
 
@@ -132,7 +132,7 @@
   -webkit-text-fill-color: #0f172a !important;
   -webkit-box-shadow: 0 0 0 1000px #ffffff inset !important;
   box-shadow: 0 0 0 1000px #ffffff inset !important;
-  border: 2px solid #1e40af;
+  border: 2px solid #3B82F6;
 }
 
 /* Error state */
@@ -174,12 +174,12 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: #3B82F6;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: #2563EB;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
@@ -236,12 +236,12 @@
 }
 
 .btn-search {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: #3B82F6;
   color: white;
 }
 
 .btn-search:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: #2563EB;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }

@@ -24,8 +24,9 @@
 }
 
 .registration-header p {
-  color: var(--color-textSecondary);
+  color: #475569;
   margin: 0;
+  font-size: 15px;
 }
 
 .btn-back {
@@ -74,16 +75,17 @@
 
 /* Form */
 .registration-form {
-  background: white;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-section {
-  margin-bottom: 30px;
-  padding-bottom: 30px;
-  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 32px;
+  padding-bottom: 32px;
+  border-bottom: 2px solid #E2E8F0;
 }
 
 .form-section:last-of-type {
@@ -92,9 +94,9 @@
 
 .form-section h3 {
   font-size: 18px;
-  color: var(--color-textPrimary);
+  color: #0F172A;
   margin: 0 0 20px 0;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .form-group {
@@ -105,8 +107,8 @@
 .form-group label {
   display: block;
   font-size: 14px;
-  font-weight: 500;
-  color: var(--color-textSecondary);
+  font-weight: 600;
+  color: #111827;
   margin-bottom: 8px;
 }
 
@@ -115,10 +117,11 @@
 .form-group textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #d1d5db;
+  border: 1px solid #D1D5DB;
   border-radius: 8px;
   font-size: 14px;
-  color: var(--color-textPrimary);
+  color: #0F172A;
+  background-color: #FFFFFF;
   transition: all 0.2s;
   box-sizing: border-box;
 }
@@ -127,12 +130,13 @@
 .form-group select:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #9C2B6D;
-  box-shadow: 0 0 0 3px rgba(156, 43, 109, 0.1);
+  border-color: #3B82F6;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.form-group input::placeholder {
-  color: #9ca3af;
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: #9CA3AF;
 }
 
 .form-row {
@@ -167,13 +171,14 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #9C2B6D 0%, #6B21A8 100%);
+  background: #3B82F6;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
+  background: #2563EB;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(156, 43, 109, 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .btn-primary:disabled {

@@ -10,28 +10,29 @@
   align-items: center;
   margin-bottom: 24px;
   padding: 20px;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #FFFFFF;
   border-radius: 12px;
-  border: 2px solid #bae6fd;
+  border: 2px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .screening-header h2 {
   margin: 0 0 8px 0;
   font-size: 28px;
-  color: #0c4a6e;
+  color: #0F172A;
 }
 
 .selected-patient-info {
   margin: 0;
-  color: #075985;
+  color: #475569;
   font-size: 15px;
 }
 
 .btn-change-patient {
   padding: 10px 20px;
   background: white;
-  color: #0369a1;
-  border: 2px solid #0369a1;
+  color: #3B82F6;
+  border: 2px solid #3B82F6;
   border-radius: 8px;
   font-size: 15px;
   font-weight: 600;
@@ -40,7 +41,7 @@
 }
 
 .btn-change-patient:hover {
-  background: #0369a1;
+  background: #3B82F6;
   color: white;
 }
 
@@ -176,12 +177,12 @@
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: #3B82F6;
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: #2563EB;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
@@ -258,7 +259,7 @@
 
 .btn-new-scan {
   padding: 12px 24px;
-  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+  background: #3B82F6;
   color: white;
   border: none;
   border-radius: 8px;
@@ -269,9 +270,9 @@
 }
 
 .btn-new-scan:hover {
-  background: linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%);
+  background: #2563EB;
   transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
 
 .results-grid {
@@ -290,7 +291,7 @@
 }
 
 .result-card.primary {
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #FFFFFF;
   border-color: #3b82f6;
 }
 
@@ -350,11 +351,11 @@
 }
 
 .prob-fill.malignant {
-  background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);
+  background: #DC2626;
 }
 
 .prob-fill.benign {
-  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
+  background: #10B981;
 }
 
 .prob-item > span:last-child {

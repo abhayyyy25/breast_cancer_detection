@@ -72,7 +72,7 @@ function Overview({ onNavigate }) {
   return (
     <div className="overview-container">
       <div className="welcome-banner">
-        <h1>👋 Welcome, {user?.full_name || 'Doctor'}</h1>
+        <h1>Welcome, {user?.full_name || 'Doctor'}</h1>
         <p>Enterprise-Level Breast Cancer Detection Hospital System</p>
       </div>
 
@@ -111,7 +111,7 @@ function Overview({ onNavigate }) {
       </div>
 
       <div className="quick-actions">
-        <h2>🚀 Quick Actions</h2>
+        <h2>Quick Actions</h2>
         <div className="actions-grid">
           <div className="action-card">
             <div className="action-icon">🔬</div>
@@ -137,7 +137,7 @@ function Overview({ onNavigate }) {
       </div>
 
       <div className="system-info">
-        <h2>ℹ️ System Information</h2>
+        <h2>System Information</h2>
         <div className="info-grid">
           <div className="info-item">
             <strong>Version:</strong>

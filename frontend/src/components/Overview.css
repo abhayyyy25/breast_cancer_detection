@@ -5,24 +5,26 @@
 }
 
 .welcome-banner {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
+  background: #FFFFFF;
+  border: 2px solid #E2E8F0;
   padding: 40px;
   border-radius: 12px;
   margin-bottom: 32px;
   text-align: center;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .welcome-banner h1 {
   margin: 0 0 12px 0;
   font-size: 36px;
   font-weight: 700;
+  color: #0F172A;
 }
 
 .welcome-banner p {
   margin: 0;
   font-size: 18px;
-  opacity: 0.9;
+  color: #475569;
 }
 
 /* Stats Grid */

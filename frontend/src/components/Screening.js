@@ -161,7 +161,7 @@ function Screening({ onViewHistory }) {
 
       <div className="screening-header">
         <div>
-          <h2>🔬 Breast Cancer Screening</h2>
+          <h2>Breast Cancer Screening</h2>
           <p className="selected-patient-info">
             Patient: <strong>{selectedPatient.first_name} {selectedPatient.last_name}</strong> 
             (MRN: {selectedPatient.medical_record_number})
