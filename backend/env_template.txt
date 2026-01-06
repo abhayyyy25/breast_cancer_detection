@@ -29,10 +29,12 @@ ACCESS_TOKEN_EXPIRE_MINUTES=1440
 # ============================================================================
 
 # For Development:
-ALLOWED_ORIGINS=*
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000
 
 # For Production (comma-separated):
-# ALLOWED_ORIGINS=https://yourapp.vercel.app,https://www.yourdomain.com
+# ALLOWED_ORIGINS=https://breast-cancer-detection-frontend.onrender.com,https://yourapp.vercel.app,https://www.yourdomain.com
+
+# NOTE: Add your deployed frontend URL to ALLOWED_ORIGINS to avoid CORS errors
 
 # ============================================================================
 # AI MODEL CONFIGURATION
