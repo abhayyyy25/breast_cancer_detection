@@ -1,9 +1,9 @@
 import React, { createContext, useState, useContext, useEffect, useCallback } from 'react';
+import { API_BASE_URL } from '../config/api';
 
 const AuthContext = createContext(null);
 
-// API Base URL - Backend is on port 8000 with /api prefix
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+// Log the configured API base URL for debugging
 console.log('🌐 API_BASE_URL configured as:', API_BASE_URL);
 
 export const AuthProvider = ({ children }) => {
