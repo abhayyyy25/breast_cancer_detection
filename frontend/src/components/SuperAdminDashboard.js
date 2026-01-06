@@ -15,12 +15,12 @@ import '../styles/enterpriseDesignSystem.css';
 import './SuperAdminDashboard.css';
 
 // API Base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const SuperAdminDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   // Create axios-like instance using fetch
   const axiosInstance = {
     get: async (url) => {
@@ -49,7 +49,7 @@ const SuperAdminDashboard = () => {
     },
     put: async (url, data) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`http://localhost:8000/api${url}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -62,7 +62,7 @@ const SuperAdminDashboard = () => {
     },
     delete: async (url) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`http://localhost:8000/api${url}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -119,12 +119,12 @@ const SuperAdminDashboard = () => {
 
   const handleCreateTenant = async (e) => {
     e.preventDefault();
-    
+
     if (newTenant.admin_password.length < 6) {
       alert('Password must be at least 6 characters long');
       return;
     }
-    
+
     try {
       await axiosInstance.post('/super-admin/tenants', newTenant);
       setShowCreateTenantModal(false);
@@ -164,9 +164,9 @@ const SuperAdminDashboard = () => {
   };
 
   const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '■', active: true, onClick: () => {} },
-    { id: 'organizations', label: 'Organizations', icon: '⬒', onClick: () => {} },
-    { id: 'analytics', label: 'Analytics', icon: '▦', onClick: () => {} },
+    { id: 'dashboard', label: 'Dashboard', icon: '■', active: true, onClick: () => { } },
+    { id: 'organizations', label: 'Organizations', icon: '⬒', onClick: () => { } },
+    { id: 'analytics', label: 'Analytics', icon: '▦', onClick: () => { } },
   ];
 
   const tenantColumns = [
@@ -279,9 +279,9 @@ const SuperAdminDashboard = () => {
     >
       {/* Metrics */}
       {dashboardData && (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: 'var(--eds-space-4)',
           marginBottom: 'var(--eds-space-8)'
         }}>
@@ -314,9 +314,9 @@ const SuperAdminDashboard = () => {
           <div className="eds-card-header">
             <h3 className="eds-card-title">Organization Status</h3>
           </div>
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(3, 1fr)', 
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(3, 1fr)',
             gap: 'var(--eds-space-6)',
             marginTop: 'var(--eds-space-4)'
           }}>
@@ -464,10 +464,10 @@ const SuperAdminDashboard = () => {
                   />
                 </div>
 
-                <div style={{ 
-                  borderTop: '1px solid var(--eds-color-border)', 
-                  marginTop: 'var(--eds-space-6)', 
-                  paddingTop: 'var(--eds-space-6)' 
+                <div style={{
+                  borderTop: '1px solid var(--eds-color-border)',
+                  marginTop: 'var(--eds-space-6)',
+                  paddingTop: 'var(--eds-space-6)'
                 }}>
                   <h4 style={{ fontSize: 'var(--eds-font-size-md)', fontWeight: 600, marginBottom: 'var(--eds-space-4)' }}>
                     Organization Admin Credentials

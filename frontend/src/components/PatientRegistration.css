@@ -18,7 +18,7 @@
 .registration-header h2 {
   font-size: 32px;
   font-weight: 800;
-  color: #111827;
+  color: #0F172A;
   margin: 0 0 8px 0;
   letter-spacing: -0.5px;
 }
@@ -26,7 +26,6 @@
 .registration-header p {
   color: #475569;
   margin: 0;
-  font-size: 15px;
 }
 
 .btn-back {
@@ -75,17 +74,16 @@
 
 /* Form */
 .registration-form {
-  background: #FFFFFF;
-  border: 2px solid #E2E8F0;
+  background: white;
   border-radius: 12px;
   padding: 30px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .form-section {
-  margin-bottom: 32px;
-  padding-bottom: 32px;
-  border-bottom: 2px solid #E2E8F0;
+  margin-bottom: 30px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .form-section:last-of-type {
@@ -94,7 +92,7 @@
 
 .form-section h3 {
   font-size: 18px;
-  color: #0F172A;
+  color: #111827;
   margin: 0 0 20px 0;
   font-weight: 700;
 }
@@ -117,11 +115,11 @@
 .form-group textarea {
   width: 100%;
   padding: 10px 14px;
-  border: 1px solid #D1D5DB;
+  border: 1px solid #d1d5db;
   border-radius: 8px;
   font-size: 14px;
   color: #0F172A;
-  background-color: #FFFFFF;
+  background: #FFFFFF;
   transition: all 0.2s;
   box-sizing: border-box;
 }
@@ -134,8 +132,7 @@
   box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
 }
 
-.form-group input::placeholder,
-.form-group textarea::placeholder {
+.form-group input::placeholder {
   color: #9CA3AF;
 }
 

@@ -394,3 +394,46 @@ class SystemStatistics(Base):
     def __repr__(self):
         return f"<SystemStatistics(date={self.date}, total_scans={self.total_scans_processed})>"
 
+
+# ============================================================================
+# REPORT SETTINGS MODEL
+# ============================================================================
+
+class ReportSettings(Base):
+    """
+    Doctor/Organization Report Customization Settings
+    Stores branding and default information for PDF reports
+    """
+    __tablename__ = "report_settings"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False, unique=True, index=True)
+    tenant_id = Column(Integer, ForeignKey("tenants.id", ondelete="CASCADE"), nullable=False, index=True)
+    
+    # Hospital/Clinic Branding
+    hospital_name = Column(String(255), nullable=True)
+    hospital_logo_url = Column(String(500), nullable=True)
+    hospital_address = Column(Text, nullable=True)
+    hospital_contact = Column(String(255), nullable=True)
+    
+    # Doctor Details (Default)
+    display_name = Column(String(255), nullable=True)  # e.g., "Dr. Rajesh Sharma, MD"
+    license_number = Column(String(100), nullable=True)  # Medical license/registration #
+    signature_url = Column(String(500), nullable=True)  # Digital signature image
+    
+    # Report Customization
+    report_header_color = Column(String(7), default="#2563EB")  # Hex color
+    report_footer_text = Column(Text, nullable=True)
+    include_disclaimer = Column(Boolean, default=True)
+    
+    # Metadata
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+    
+    # Relationships
+    user = relationship("User", foreign_keys=[user_id])
+    tenant = relationship("Tenant", foreign_keys=[tenant_id])
+
+    def __repr__(self):
+        return f"<ReportSettings(id={self.id}, user_id={self.user_id}, hospital='{self.hospital_name}')>"
+

@@ -471,6 +471,45 @@ class PaginatedResponse(BaseModel):
     total_pages: int
 
 
+# ============================================================================
+# REPORT SETTINGS SCHEMAS
+# ============================================================================
+
+class ReportSettingsCreate(BaseModel):
+    """Create or update report customization settings"""
+    hospital_name: Optional[str] = Field(None, max_length=255)
+    hospital_logo_url: Optional[str] = Field(None, max_length=500)
+    hospital_address: Optional[str] = None
+    hospital_contact: Optional[str] = Field(None, max_length=255)
+    display_name: Optional[str] = Field(None, max_length=255)
+    license_number: Optional[str] = Field(None, max_length=100)
+    signature_url: Optional[str] = Field(None, max_length=500)
+    report_header_color: Optional[str] = Field(None, pattern=r'^#[0-9A-Fa-f]{6}$')
+    report_footer_text: Optional[str] = None
+    include_disclaimer: Optional[bool] = True
+
+
+class ReportSettingsResponse(BaseModel):
+    id: int
+    user_id: int
+    tenant_id: int
+    hospital_name: Optional[str]
+    hospital_logo_url: Optional[str]
+    hospital_address: Optional[str]
+    hospital_contact: Optional[str]
+    display_name: Optional[str]
+    license_number: Optional[str]
+    signature_url: Optional[str]
+    report_header_color: str
+    report_footer_text: Optional[str]
+    include_disclaimer: bool
+    created_at: datetime
+    updated_at: datetime
+    
+    class Config:
+        from_attributes = True
+
+
 # Forward references
 LoginResponse.model_rebuild()
 

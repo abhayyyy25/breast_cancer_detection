@@ -11,6 +11,7 @@ import Screening from './Screening';
 import PatientHistory from './PatientHistory';
 import PatientRegistration from './PatientRegistration';
 import Overview from './Overview';
+import ReportSettings from './ReportSettings';
 import '../styles/enterpriseDesignSystem.css';
 import './Dashboard.css';
 
@@ -35,12 +36,12 @@ function Dashboard() {
 
   // Navigation items based on role
   const navigationItems = [
-    { 
-      id: 'overview', 
-      label: 'Overview', 
-      icon: '■', 
-      active: activeView === 'overview', 
-      onClick: () => setActiveView('overview') 
+    {
+      id: 'overview',
+      label: 'Overview',
+      icon: '■',
+      active: activeView === 'overview',
+      onClick: () => setActiveView('overview')
     },
   ];
 
@@ -56,19 +57,26 @@ function Dashboard() {
   }
 
   navigationItems.push(
-    { 
-      id: 'screening', 
-      label: 'Screening', 
-      icon: '▦', 
-      active: activeView === 'screening', 
-      onClick: () => setActiveView('screening') 
+    {
+      id: 'screening',
+      label: 'Screening',
+      icon: '▦',
+      active: activeView === 'screening',
+      onClick: () => setActiveView('screening')
     },
-    { 
-      id: 'history', 
-      label: 'Patient History', 
-      icon: '▭', 
-      active: activeView === 'history', 
-      onClick: () => setActiveView('history') 
+    {
+      id: 'history',
+      label: 'Patient History',
+      icon: '▭',
+      active: activeView === 'history',
+      onClick: () => setActiveView('history')
+    },
+    {
+      id: 'settings',
+      label: 'Report Settings',
+      icon: '⚙',
+      active: activeView === 'settings',
+      onClick: () => setActiveView('settings')
     }
   );
 
@@ -82,6 +90,8 @@ function Dashboard() {
         return 'Screening Analysis';
       case 'history':
         return 'Patient History';
+      case 'settings':
+        return 'Report Settings';
       default:
         return 'Dashboard';
     }
@@ -94,7 +104,7 @@ function Dashboard() {
       case 'register':
         if (user?.role === 'doctor') {
           return (
-            <PatientRegistration 
+            <PatientRegistration
               onBack={() => setActiveView('overview')}
               onPatientRegistered={handlePatientRegistered}
             />
@@ -108,7 +118,7 @@ function Dashboard() {
               <p className="eds-text-body" style={{ marginBottom: 'var(--eds-space-6)' }}>
                 Only Doctors can register patients.
               </p>
-              <button 
+              <button
                 className="eds-button eds-button-secondary"
                 onClick={() => setActiveView('overview')}
               >
@@ -121,6 +131,8 @@ function Dashboard() {
         return <Screening onViewHistory={handleViewHistory} />;
       case 'history':
         return <PatientHistory patient={selectedPatient} onBack={handleBackFromHistory} />;
+      case 'settings':
+        return <ReportSettings onBack={() => setActiveView('overview')} />;
       default:
         return <Screening />;
     }
@@ -133,7 +145,7 @@ function Dashboard() {
       navigationItems={navigationItems}
     >
       {renderView()}
-      
+
       {/* Medical Disclaimer Footer */}
       <div style={{
         marginTop: 'var(--eds-space-12)',

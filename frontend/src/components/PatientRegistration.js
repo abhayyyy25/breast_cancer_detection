@@ -12,7 +12,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
-  
+
   const [formData, setFormData] = useState({
     full_name: '',
     date_of_birth: '',
@@ -45,20 +45,20 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+
     // Validate password length
     if (formData.password.length < 6) {
       setError('Password must be at least 6 characters long');
       return;
     }
-    
+
     setLoading(true);
     setError(null);
     setSuccess(null);
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8001/api/medical-staff/patients', {
+      const response = await fetch('http://localhost:8000/api/medical-staff/patients', {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -73,9 +73,9 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
       }
 
       const data = await response.json();
-      
+
       setSuccess(`✅ Patient "${formData.full_name}" registered successfully! MRN: ${data.mrn}`);
-      
+
       // Reset form
       setFormData({
         full_name: '',
@@ -149,7 +149,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
         {/* Personal Information */}
         <div className="form-section">
           <h3>Personal Information</h3>
-          
+
           <div className="form-group">
             <label>Full Name *</label>
             <input
@@ -210,7 +210,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
         {/* Contact Information */}
         <div className="form-section">
           <h3>Contact Information</h3>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label>Email *</label>
@@ -284,7 +284,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
         {/* Emergency Contact */}
         <div className="form-section">
           <h3>Emergency Contact</h3>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label>Contact Name</label>
@@ -322,7 +322,7 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
         {/* Patient Login Credentials */}
         <div className="form-section">
           <h3>Patient Portal Login Credentials</h3>
-          
+
           <div className="form-row">
             <div className="form-group">
               <label>Username *</label>

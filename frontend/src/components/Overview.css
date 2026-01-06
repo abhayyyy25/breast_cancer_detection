@@ -5,13 +5,13 @@
 }
 
 .welcome-banner {
-  background: #FFFFFF;
-  border: 2px solid #E2E8F0;
+  background: #F8FAFC;
+  color: #0F172A;
   padding: 40px;
   border-radius: 12px;
   margin-bottom: 32px;
   text-align: center;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  border: 2px solid #E2E8F0;
 }
 
 .welcome-banner h1 {
@@ -60,7 +60,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+  background: #F1F5F9;
   border-radius: 12px;
 }
 
@@ -141,7 +141,7 @@
 .action-button {
   width: 100%;
   padding: 12px 24px;
-  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+  background: #3B82F6;
   color: white;
   border: none;
   border-radius: 8px;
@@ -152,7 +152,7 @@
 }
 
 .action-button:hover {
-  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  background: #2563EB;
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
@@ -203,8 +203,8 @@
 
 /* Medical Disclaimer */
 .medical-disclaimer-box {
-  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-  border: 3px solid #f59e0b;
+  background: #FEF3C7;
+  border: 2px solid #F59E0B;
   border-radius: 12px;
   padding: 24px;
   display: flex;
@@ -269,4 +269,3 @@
     text-align: center;
   }
 }
-

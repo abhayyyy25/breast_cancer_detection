@@ -10,13 +10,13 @@ import LoadingSpinner from './LoadingSpinner';
 import './PatientDetails.css';
 
 // API Base URL - uses environment variable for production, falls back to localhost for development
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const PatientDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const [patient, setPatient] = useState(null);
   const [scans, setScans] = useState([]);
   const [loading, setLoading] = useState(true);

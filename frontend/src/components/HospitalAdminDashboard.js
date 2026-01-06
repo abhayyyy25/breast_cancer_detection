@@ -15,12 +15,12 @@ import '../styles/enterpriseDesignSystem.css';
 import './HospitalAdminDashboard.css';
 
 // API Base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const HospitalAdminDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
-  
+
   // Create axios-like instance using fetch
   const axiosInstance = {
     get: async (url) => {
@@ -59,7 +59,7 @@ const HospitalAdminDashboard = () => {
     },
     put: async (url, data) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`http://localhost:8000/api${url}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -77,7 +77,7 @@ const HospitalAdminDashboard = () => {
     },
     delete: async (url) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`http://localhost:8000/api${url}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -151,22 +151,22 @@ const HospitalAdminDashboard = () => {
 
   const handleCreateStaff = async (e) => {
     e.preventDefault();
-    
+
     if (newStaff.password.length < 6) {
       alert('Password must be at least 6 characters long');
       return;
     }
-    
+
     try {
       const response = await axiosInstance.post('/hospital-admin/staff', newStaff);
       console.log('Staff created successfully:', response.data);
-      
+
       setShowCreateStaffModal(false);
       fetchUsers();
       fetchDashboardData();
-      
+
       alert(`Staff member "${newStaff.full_name}" created successfully`);
-      
+
       setNewStaff({
         email: '',
         full_name: '',
@@ -181,10 +181,10 @@ const HospitalAdminDashboard = () => {
       setShowStaffPassword(false);
     } catch (error) {
       console.error('Error creating staff member:', error);
-      const errorMessage = error.response?.data?.detail 
+      const errorMessage = error.response?.data?.detail
         || (error.response?.data?.message)
         || (typeof error.response?.data === 'string' ? error.response?.data : null)
-        || error.message 
+        || error.message
         || 'Unknown error';
       alert(`Failed to create staff member: ${errorMessage}`);
     }
@@ -357,9 +357,9 @@ const HospitalAdminDashboard = () => {
     >
       {/* Metrics */}
       {dashboardData && (
-        <div style={{ 
-          display: 'grid', 
-          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
           gap: 'var(--eds-space-4)',
           marginBottom: 'var(--eds-space-8)'
         }}>
@@ -405,8 +405,8 @@ const HospitalAdminDashboard = () => {
               background: dashboardData.scan_limit_usage_percentage > 90
                 ? 'var(--eds-color-error)'
                 : dashboardData.scan_limit_usage_percentage > 75
-                ? 'var(--eds-color-warning)'
-                : 'var(--eds-color-success)',
+                  ? 'var(--eds-color-warning)'
+                  : 'var(--eds-color-success)',
               transition: 'width var(--eds-transition-base)'
             }} />
           </div>
@@ -441,9 +441,9 @@ const HospitalAdminDashboard = () => {
             <div className="eds-card-header">
               <h3 className="eds-card-title">Active Staff</h3>
             </div>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', 
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))',
               gap: 'var(--eds-space-4)',
               marginTop: 'var(--eds-space-4)'
             }}>
@@ -612,10 +612,10 @@ const HospitalAdminDashboard = () => {
                   </div>
                 </div>
 
-                <div style={{ 
-                  borderTop: '1px solid var(--eds-color-border)', 
-                  marginTop: 'var(--eds-space-6)', 
-                  paddingTop: 'var(--eds-space-6)' 
+                <div style={{
+                  borderTop: '1px solid var(--eds-color-border)',
+                  marginTop: 'var(--eds-space-6)',
+                  paddingTop: 'var(--eds-space-6)'
                 }}>
                   <h4 style={{ fontSize: 'var(--eds-font-size-md)', fontWeight: 600, marginBottom: 'var(--eds-space-4)' }}>
                     Login Credentials

@@ -10,13 +10,13 @@ import LoadingSpinner from './LoadingSpinner';
 import './OrganizationDetails.css';
 
 // API Base URL - uses environment variable for production, falls back to localhost for development
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const OrganizationDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
-  
+
   const [organization, setOrganization] = useState(null);
   const [stats, setStats] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -118,8 +118,8 @@ const OrganizationDetails = () => {
           <h2>{organization.name}</h2>
           <p className="organization-type">{organization.organization_type.replace('_', ' ')}</p>
           <div className="organization-status">
-            <span 
-              className="status-badge" 
+            <span
+              className="status-badge"
               style={{ backgroundColor: getStatusColor(organization.subscription_status) }}
             >
               {organization.subscription_status}

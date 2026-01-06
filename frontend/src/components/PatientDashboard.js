@@ -14,11 +14,11 @@ import '../styles/enterpriseDesignSystem.css';
 import './PatientDashboard.css';
 
 // API Base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 
 const PatientDashboard = () => {
   const { user } = useAuth();
-  
+
   // Create axios-like instance using fetch
   const axiosInstance = {
     get: async (url, config = {}) => {
@@ -33,7 +33,7 @@ const PatientDashboard = () => {
         ...(config.responseType && { responseType: config.responseType })
       });
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      
+
       if (config.responseType === 'blob') {
         return { data: await response.blob() };
       }
@@ -41,7 +41,7 @@ const PatientDashboard = () => {
     },
     put: async (url, data) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8001/api${url}`, {
+      const response = await fetch(`http://localhost:8000/api${url}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -118,7 +118,7 @@ const PatientDashboard = () => {
       const response = await axiosInstance.get(`/patient-portal/scans/${scanId}/download-report`, {
         responseType: 'blob',
       });
-      
+
       const url = window.URL.createObjectURL(new Blob([response.data]));
       const link = document.createElement('a');
       link.href = url;
@@ -302,9 +302,9 @@ const PatientDashboard = () => {
 
           {/* Metrics */}
           {dashboardData && (
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', 
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
               gap: 'var(--eds-space-4)',
               marginBottom: 'var(--eds-space-8)'
             }}>
@@ -336,8 +336,8 @@ const PatientDashboard = () => {
             <h3 className="eds-card-title">Health Summary</h3>
             <div style={{ marginTop: 'var(--eds-space-4)' }}>
               <p className="eds-text-body">
-                {dashboardData?.malignant_results > 0 
-                  ? 'Some scans show areas that require follow-up with your doctor. Please consult with your healthcare provider for next steps.' 
+                {dashboardData?.malignant_results > 0
+                  ? 'Some scans show areas that require follow-up with your doctor. Please consult with your healthcare provider for next steps.'
                   : 'Based on your scan history, no high-risk indicators have been detected. Continue regular screenings as recommended by your doctor.'}
               </p>
               {dashboardData?.malignant_results > 0 && (
@@ -390,9 +390,9 @@ const PatientDashboard = () => {
           {/* Contact Information */}
           <div className="eds-card">
             <h3 className="eds-card-title">Contact Information</h3>
-            <div style={{ 
-              display: 'grid', 
-              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))',
               gap: 'var(--eds-space-4)',
               marginTop: 'var(--eds-space-4)'
             }}>
@@ -411,7 +411,7 @@ const PatientDashboard = () => {
               <div>
                 <div className="eds-text-small" style={{ marginBottom: 'var(--eds-space-1)' }}>Emergency Contact</div>
                 <div className="eds-text-body">
-                  {dashboardData?.emergency_contact_name 
+                  {dashboardData?.emergency_contact_name
                     ? `${dashboardData.emergency_contact_name} - ${dashboardData.emergency_contact_phone}`
                     : 'Not provided'}
                 </div>
@@ -436,14 +436,14 @@ const PatientDashboard = () => {
 
       {activeTab === 'scanDetails' && selectedScan && (
         <div>
-          <button 
+          <button
             className="eds-button eds-button-secondary"
             onClick={() => setActiveTab('scans')}
             style={{ marginBottom: 'var(--eds-space-6)' }}
           >
             ← Back to Scans
           </button>
-          
+
           <div className="eds-card" style={{ marginBottom: 'var(--eds-space-6)' }}>
             <h2 className="eds-heading-3">Scan Details: {selectedScan.scan_number}</h2>
             <div className="eds-text-small" style={{ marginTop: 'var(--eds-space-2)' }}>
@@ -455,9 +455,9 @@ const PatientDashboard = () => {
             </div>
           </div>
 
-          <div style={{ 
-            display: 'grid', 
-            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', 
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
             gap: 'var(--eds-space-6)',
             marginBottom: 'var(--eds-space-6)'
           }}>
@@ -582,10 +582,10 @@ const PatientDashboard = () => {
                   />
                 </div>
 
-                <div style={{ 
-                  borderTop: '1px solid var(--eds-color-border)', 
-                  marginTop: 'var(--eds-space-6)', 
-                  paddingTop: 'var(--eds-space-6)' 
+                <div style={{
+                  borderTop: '1px solid var(--eds-color-border)',
+                  marginTop: 'var(--eds-space-6)',
+                  paddingTop: 'var(--eds-space-6)'
                 }}>
                   <h4 style={{ fontSize: 'var(--eds-font-size-md)', fontWeight: 600, marginBottom: 'var(--eds-space-4)' }}>
                     Emergency Contact

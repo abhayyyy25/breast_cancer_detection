@@ -2,8 +2,8 @@ import React, { createContext, useState, useContext, useEffect, useCallback } fr
 
 const AuthContext = createContext(null);
 
-// API Base URL - Backend is on port 8001 with /api prefix
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8001/api';
+// API Base URL - Backend is on port 8000 with /api prefix
+const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
 console.log('🌐 API_BASE_URL configured as:', API_BASE_URL);
 
 export const AuthProvider = ({ children }) => {
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
         await logout();
         return false;
       }
-      
+
       console.log('✅ Token valid');
       return true;
     } catch (error) {
@@ -55,12 +55,12 @@ export const AuthProvider = ({ children }) => {
     // Check if user is logged in (from localStorage)
     const storedToken = localStorage.getItem('token');
     const storedUser = localStorage.getItem('user');
-    
+
     if (storedToken && storedUser) {
       console.log('🔍 Found stored token, verifying...');
       setToken(storedToken);
       setUser(JSON.parse(storedUser));
-      
+
       // Verify token is still valid
       verifyToken(storedToken).finally(() => {
         setLoading(false);
@@ -75,7 +75,7 @@ export const AuthProvider = ({ children }) => {
     try {
       console.log('🔐 Attempting login to:', `${API_BASE_URL}/auth/login`);
       console.log('👤 Username:', username);
-      
+
       const response = await fetch(`${API_BASE_URL}/auth/login`, {
         method: 'POST',
         headers: {
@@ -85,13 +85,13 @@ export const AuthProvider = ({ children }) => {
       });
 
       console.log('📡 Response status:', response.status);
-      
+
       if (!response.ok) {
         const data = await response.json();
         console.log('❌ Error response:', data);
-        return { 
-          success: false, 
-          error: data.detail || 'Invalid username or password. Please try again.' 
+        return {
+          success: false,
+          error: data.detail || 'Invalid username or password. Please try again.'
         };
       }
 
@@ -110,7 +110,7 @@ export const AuthProvider = ({ children }) => {
 
       setToken(accessToken);
       setUser(userData);
-      
+
       localStorage.setItem('token', accessToken);
       localStorage.setItem('user', JSON.stringify(userData));
 
@@ -118,9 +118,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error('❌ Login error:', error);
       console.error('Error details:', error.message);
-      return { 
-        success: false, 
-        error: 'Network error. Please check your connection and try again.' 
+      return {
+        success: false,
+        error: 'Network error. Please check your connection and try again.'
       };
     }
   };
@@ -135,8 +135,8 @@ export const AuthProvider = ({ children }) => {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}` // Requires admin token
         },
-        body: JSON.stringify({ 
-        email,
+        body: JSON.stringify({
+          email,
           password,
           full_name: name,
           role: 'doctor'
@@ -146,18 +146,18 @@ export const AuthProvider = ({ children }) => {
       const data = await response.json();
 
       if (!response.ok) {
-        return { 
-          success: false, 
-          error: data.detail || 'Signup failed. Please try again.' 
+        return {
+          success: false,
+          error: data.detail || 'Signup failed. Please try again.'
         };
       }
 
       return { success: true };
     } catch (error) {
       console.error('Signup error:', error);
-      return { 
-        success: false, 
-        error: 'Network error. Please check your connection and try again.' 
+      return {
+        success: false,
+        error: 'Network error. Please check your connection and try again.'
       };
     }
   };

@@ -11,7 +11,7 @@ import os
 import time
 
 from database_saas import engine, Base
-from routers_saas import super_admin, hospital_admin, medical_staff, patient_portal
+from routers_saas import super_admin, hospital_admin, medical_staff, patient_portal, report_settings
 from routers_saas.auth import router as auth_router
 
 
@@ -109,6 +109,9 @@ app.include_router(medical_staff.router, prefix="/api")
 # Patient Portal
 app.include_router(patient_portal.router, prefix="/api")
 
+# Report Settings (Medical Staff)
+app.include_router(report_settings.router, prefix="/api")
+
 
 # ============================================================================
 # STATIC FILES (Uploads)
@@ -189,7 +192,7 @@ async def startup_event():
     print("[*] Starting server...")
     
     # Import all models to ensure they're registered with Base
-    from models_saas import User, Tenant, Patient, Scan
+    from models_saas import User, Tenant, Patient, Scan, ReportSettings
     
     # Get database URL for logging
     db_url = os.getenv("DATABASE_URL", "sqlite:///./breast_cancer_saas.db")

@@ -207,12 +207,12 @@ const PatientManagement = ({ onPatientSelect, onViewHistory }) => {
   return (
     <div className="patient-management">
       <div className="patient-management-header">
-        <h2>Patient Management</h2>
+        <h2>👥 Patient Management</h2>
         <button 
           className="btn-add-patient"
           onClick={() => setShowAddForm(!showAddForm)}
         >
-          {showAddForm ? 'Cancel' : 'Add New Patient'}
+          {showAddForm ? '❌ Cancel' : '➕ Add New Patient'}
         </button>
       </div>
 
@@ -372,7 +372,7 @@ const PatientManagement = ({ onPatientSelect, onViewHistory }) => {
         <form onSubmit={handleSearch}>
           <input
             type="text"
-            placeholder="Search by MRN or Name..."
+            placeholder="🔍 Search by MRN or Name..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="search-input"
@@ -448,7 +448,7 @@ const PatientManagement = ({ onPatientSelect, onViewHistory }) => {
                     className="btn-view-history"
                     onClick={() => onViewHistory(patient)}
                   >
-                    View History
+                    📋 View History
                   </button>
                 )}
               </div>

@@ -19,8 +19,8 @@ const getDefaultApiBase = () => {
   if (typeof window !== "undefined") {
     const localHosts = ["localhost", "127.0.0.1", "0.0.0.0"];
     if (localHosts.includes(window.location.hostname)) {
-      console.log("Using local API URL: http://localhost:8001");
-      return "http://localhost:8001";
+      console.log("Using local API URL: http://localhost:8000");
+      return "http://localhost:8000";
     }
   }
 
@@ -158,7 +158,7 @@ function AppContent() {
         stats: data.stats || {},
         findings: data.findings || null,  // NEW: Detailed findings from backend
       };
-      
+
       // Debug logging
       console.log("Analysis Results:", {
         result: resultData.result,
@@ -167,7 +167,7 @@ function AppContent() {
         benignProb: resultData.benign,
         confidence: resultData.confidence
       });
-      
+
       setResults(resultData);
 
       setAnalysisDone(true);
@@ -176,9 +176,9 @@ function AppContent() {
       setStatusMessage("Analysis complete.");
     } catch (error) {
       console.error("Analysis error:", error);
-      
+
       let errorMsg = "Backend not reachable.";
-      
+
       if (error.name === 'AbortError') {
         errorMsg = "Request timed out. The backend server may be starting up (this can take 1-2 minutes on free hosting). Please try again.";
       } else if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
@@ -186,7 +186,7 @@ function AppContent() {
       } else if (error.message) {
         errorMsg = error.message;
       }
-      
+
       setErrorMessage(errorMsg);
       setStatusMessage("");
     } finally {
@@ -415,17 +415,15 @@ function AppContent() {
 
               <div className="visual-tabs">
                 <button
-                  className={`visual-tab ${
-                    visualTab === "overlay" ? "active" : ""
-                  }`}
+                  className={`visual-tab ${visualTab === "overlay" ? "active" : ""
+                    }`}
                   onClick={() => setVisualTab("overlay")}
                 >
                   Heatmap Overlay
                 </button>
                 <button
-                  className={`visual-tab ${
-                    visualTab === "heatmap" ? "active" : ""
-                  }`}
+                  className={`visual-tab ${visualTab === "heatmap" ? "active" : ""
+                    }`}
                   onClick={() => setVisualTab("heatmap")}
                 >
                   Heatmap Only
@@ -437,9 +435,8 @@ function AppContent() {
                   Region Detection (BBox)
                 </button>
                 <button
-                  className={`visual-tab ${
-                    visualTab === "original" ? "active" : ""
-                  }`}
+                  className={`visual-tab ${visualTab === "original" ? "active" : ""
+                    }`}
                   onClick={() => setVisualTab("original")}
                 >
                   Original Image
@@ -454,12 +451,12 @@ function AppContent() {
                     <p className="muted small">Image not available.</p>
                   )}
                 </div>
-                
-                
+
+
                 {/* Detailed Analysis Information */}
                 <div className="results-info-card">
                   <h4 style={{ textAlign: 'center' }}>Understanding Your Results</h4>
-                  
+
                   {results.result?.toLowerCase().includes("malignant") ? (
                     <div>
                       {/* Detected Regions */}
@@ -492,7 +489,7 @@ function AppContent() {
                           </div>
                         </>
                       )}
-                      
+
                       <div className="urgent-box malignant">
                         <h5>⚕️ Recommended Action</h5>
                         <p>Based on these findings, consultation with an oncologist or breast specialist is strongly recommended.</p>
@@ -506,13 +503,13 @@ function AppContent() {
                     </div>
                   ) : (
                     <div>
-                      <div className="urgent-box" style={{background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', border: '1px solid #bbf7d0'}}>
-                        <h5 style={{color: '#059669'}}>✓ Continue Preventive Care</h5>
+                      <div className="urgent-box" style={{ background: 'linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%)', border: '1px solid #bbf7d0' }}>
+                        <h5 style={{ color: '#059669' }}>✓ Continue Preventive Care</h5>
                         <p>The analysis shows patterns consistent with healthy tissue. Continue regular screenings.</p>
-                        <ul className="checklist" style={{listStyle: 'none'}}>
-                          <li style={{color: '#059669'}}>Monthly self-breast examinations</li>
-                          <li style={{color: '#059669'}}>Age-appropriate mammogram schedules</li>
-                          <li style={{color: '#059669'}}>Report any new changes immediately</li>
+                        <ul className="checklist" style={{ listStyle: 'none' }}>
+                          <li style={{ color: '#059669' }}>Monthly self-breast examinations</li>
+                          <li style={{ color: '#059669' }}>Age-appropriate mammogram schedules</li>
+                          <li style={{ color: '#059669' }}>Report any new changes immediately</li>
                         </ul>
                       </div>
                     </div>
@@ -525,41 +522,36 @@ function AppContent() {
               <h3 className="section-title">Model & Risk Details</h3>
               <div className="details-tabs">
                 <button
-                  className={`details-tab ${
-                    detailsTab === "model" ? "active" : ""
-                  }`}
+                  className={`details-tab ${detailsTab === "model" ? "active" : ""
+                    }`}
                   onClick={() => setDetailsTab("model")}
                 >
                   Model Information
                 </button>
                 <button
-                  className={`details-tab ${
-                    detailsTab === "risk" ? "active" : ""
-                  }`}
+                  className={`details-tab ${detailsTab === "risk" ? "active" : ""
+                    }`}
                   onClick={() => setDetailsTab("risk")}
                 >
                   Risk Guide
                 </button>
                 <button
-                  className={`details-tab ${
-                    detailsTab === "heatmapInfo" ? "active" : ""
-                  }`}
+                  className={`details-tab ${detailsTab === "heatmapInfo" ? "active" : ""
+                    }`}
                   onClick={() => setDetailsTab("heatmapInfo")}
                 >
                   Heatmap Tips
                 </button>
                 <button
-                  className={`details-tab ${
-                    detailsTab === "clinical" ? "active" : ""
-                  }`}
+                  className={`details-tab ${detailsTab === "clinical" ? "active" : ""
+                    }`}
                   onClick={() => setDetailsTab("clinical")}
                 >
                   Clinical Context
                 </button>
                 <button
-                  className={`details-tab ${
-                    detailsTab === "nextSteps" ? "active" : ""
-                  }`}
+                  className={`details-tab ${detailsTab === "nextSteps" ? "active" : ""
+                    }`}
                   onClick={() => setDetailsTab("nextSteps")}
                 >
                   Next Steps
@@ -591,7 +583,7 @@ function AppContent() {
                     </ul>
                     <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(255, 200, 220, 0.15)', borderRadius: '8px' }}>
                       <p style={{ fontSize: '0.9rem', margin: 0 }}>
-                        <strong>Note:</strong> Risk levels are based on AI model confidence. They should be confirmed with 
+                        <strong>Note:</strong> Risk levels are based on AI model confidence. They should be confirmed with
                         clinical examination, additional imaging (mammography, ultrasound, MRI), and if necessary, tissue biopsy.
                       </p>
                     </div>
@@ -601,39 +593,39 @@ function AppContent() {
                   <div>
                     <h4 className="details-heading">Understanding Grad-CAM Heatmaps</h4>
                     <p style={{ marginBottom: '16px', lineHeight: '1.8' }}>
-                      Grad-CAM (Gradient-weighted Class Activation Mapping) is an AI visualization technique that shows 
-                      which parts of the image most influenced the model's decision. Think of it as the AI "highlighting" 
+                      Grad-CAM (Gradient-weighted Class Activation Mapping) is an AI visualization technique that shows
+                      which parts of the image most influenced the model's decision. Think of it as the AI "highlighting"
                       areas it found most important.
                     </p>
-                    
+
                     <h4 className="details-heading" style={{ marginTop: '20px' }}>Color Meanings</h4>
                     <ul className="details-list">
-                      <li><strong style={{ color: '#DC2626' }}>Red/Orange:</strong> Highest attention areas. The model 
-                      found these regions most significant for its prediction. In malignant cases, these often indicate 
-                      suspicious tissue patterns.</li>
-                      <li><strong style={{ color: '#F59E0B' }}>Yellow:</strong> Moderate attention. Areas of interest 
-                      but less critical than red zones.</li>
-                      <li><strong style={{ color: '#10B981' }}>Green:</strong> Low to moderate attention. Normal or 
-                      less concerning tissue patterns.</li>
-                      <li><strong style={{ color: '#3B82F6' }}>Blue:</strong> Minimal attention. Areas that had little 
-                      impact on the final prediction.</li>
+                      <li><strong style={{ color: '#DC2626' }}>Red/Orange:</strong> Highest attention areas. The model
+                        found these regions most significant for its prediction. In malignant cases, these often indicate
+                        suspicious tissue patterns.</li>
+                      <li><strong style={{ color: '#F59E0B' }}>Yellow:</strong> Moderate attention. Areas of interest
+                        but less critical than red zones.</li>
+                      <li><strong style={{ color: '#10B981' }}>Green:</strong> Low to moderate attention. Normal or
+                        less concerning tissue patterns.</li>
+                      <li><strong style={{ color: '#3B82F6' }}>Blue:</strong> Minimal attention. Areas that had little
+                        impact on the final prediction.</li>
                     </ul>
-                    
+
                     <h4 className="details-heading" style={{ marginTop: '20px' }}>Viewing Modes Explained</h4>
                     <ul className="details-list">
-                      <li><strong>Heatmap Overlay:</strong> Best for understanding suspicious areas in anatomical context. 
-                      The original image is shown with colored heatmap overlaid.</li>
-                      <li><strong>Heatmap Only:</strong> Pure activation visualization without the original image. 
-                      Useful for seeing the exact intensity distribution.</li>
-                      <li><strong>Region Detection (BBox):</strong> Shows detected regions of interest with bounding boxes. 
-                      Highlights specific areas the model identified.</li>
+                      <li><strong>Heatmap Overlay:</strong> Best for understanding suspicious areas in anatomical context.
+                        The original image is shown with colored heatmap overlaid.</li>
+                      <li><strong>Heatmap Only:</strong> Pure activation visualization without the original image.
+                        Useful for seeing the exact intensity distribution.</li>
+                      <li><strong>Region Detection (BBox):</strong> Shows detected regions of interest with bounding boxes.
+                        Highlights specific areas the model identified.</li>
                       <li><strong>Original Image:</strong> Unprocessed scan for reference and comparison.</li>
                     </ul>
-                    
+
                     <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(255, 200, 220, 0.15)', borderRadius: '8px' }}>
                       <p style={{ fontSize: '0.9rem', margin: 0 }}>
-                        <strong>Important:</strong> Heatmaps show AI attention, not confirmed disease. Red areas don't 
-                        automatically mean cancer, and blue areas don't guarantee health. Medical professionals use multiple 
+                        <strong>Important:</strong> Heatmaps show AI attention, not confirmed disease. Red areas don't
+                        automatically mean cancer, and blue areas don't guarantee health. Medical professionals use multiple
                         diagnostic tools for accurate assessment.
                       </p>
                     </div>
@@ -642,11 +634,11 @@ function AppContent() {
                 {detailsTab === "clinical" && (
                   <div>
                     <h4 className="details-heading" style={{ textAlign: 'left', fontSize: '1.3rem', marginBottom: '25px', color: '#9C2B6D' }}>Your Image Analysis Details</h4>
-                    
+
                     {/* Summary Card */}
-                    <div style={{ 
-                      padding: '20px', 
-                      background: results.result?.toLowerCase().includes("malignant") 
+                    <div style={{
+                      padding: '20px',
+                      background: results.result?.toLowerCase().includes("malignant")
                         ? 'linear-gradient(135deg, #ffe5e5 0%, #fff5f5 100%)'
                         : 'linear-gradient(135deg, #e5fff5 0%, #f5fffa 100%)',
                       borderRadius: '16px',
@@ -661,7 +653,7 @@ function AppContent() {
                         {results.findings?.summary || "Analysis summary not available."}
                       </p>
                     </div>
-                    
+
                     {/* Detection Statistics Table */}
                     <h4 className="details-heading" style={{ marginTop: '30px', marginBottom: '15px', fontSize: '1.15rem', color: '#9C2B6D' }}>Detection Statistics</h4>
                     <div style={{ overflowX: 'auto', background: 'white', borderRadius: '16px', boxShadow: '0 2px 12px rgba(156, 43, 109, 0.08)', padding: '5px' }}>
@@ -707,7 +699,7 @@ function AppContent() {
                         </tbody>
                       </table>
                     </div>
-                    
+
                     {/* Detected Regions Table */}
                     {results.findings?.regions && results.findings.regions.length > 0 && (
                       <>
@@ -734,9 +726,9 @@ function AppContent() {
                                   <td style={{ padding: '12px 14px', borderBottom: idx === results.findings.regions.length - 1 ? 'none' : '1px solid rgba(156, 43, 109, 0.1)', color: '#666' }}>{region.shape || 'N/A'}</td>
                                   <td style={{ padding: '12px 14px', borderBottom: idx === results.findings.regions.length - 1 ? 'none' : '1px solid rgba(156, 43, 109, 0.1)', color: '#666' }}>{region.characteristics?.pattern || 'N/A'}</td>
                                   <td style={{ padding: '12px 14px', borderBottom: idx === results.findings.regions.length - 1 ? 'none' : '1px solid rgba(156, 43, 109, 0.1)' }}>
-                                    <span style={{ 
-                                      padding: '4px 10px', 
-                                      borderRadius: '14px', 
+                                    <span style={{
+                                      padding: '4px 10px',
+                                      borderRadius: '14px',
                                       fontSize: '0.82rem',
                                       fontWeight: '600',
                                       background: region.characteristics?.severity === 'high' ? 'rgba(220, 38, 38, 0.12)' : region.characteristics?.severity === 'moderate' ? 'rgba(245, 158, 11, 0.12)' : 'rgba(16, 185, 129, 0.12)',
@@ -754,7 +746,7 @@ function AppContent() {
                         </div>
                       </>
                     )}
-                    
+
                     {/* No Regions Detected */}
                     {(!results.findings?.regions || results.findings.regions.length === 0) && (
                       <div style={{ padding: '20px', background: 'linear-gradient(135deg, #e5fff5 0%, #f5fffa 100%)', borderRadius: '16px', marginTop: '25px', border: '2px solid #c9ffe5', boxShadow: '0 2px 8px rgba(0,0,0,0.06)' }}>
@@ -763,13 +755,13 @@ function AppContent() {
                         </p>
                       </div>
                     )}
-                    
+
                   </div>
                 )}
                 {detailsTab === "nextSteps" && (
                   <div>
                     <h4 className="details-heading">What To Do After Your Results</h4>
-                    
+
                     {results.result?.toLowerCase().includes("malignant") ? (
                       <div>
                         <div style={{ padding: '14px', background: 'rgba(220, 38, 38, 0.08)', borderRadius: '10px', marginBottom: '16px', borderLeft: '4px solid #DC2626' }}>
@@ -777,7 +769,7 @@ function AppContent() {
                             ⚠️ High-Priority Action Required
                           </p>
                         </div>
-                        
+
                         <h4 className="details-heading" style={{ marginTop: '20px' }}>Immediate Steps (Within 1-2 Days)</h4>
                         <ul className="details-list">
                           <li><strong>Contact Your Primary Care Doctor:</strong> Schedule an urgent appointment to discuss these findings.</li>
@@ -785,7 +777,7 @@ function AppContent() {
                           <li><strong>Gather Medical History:</strong> Compile your family history of breast cancer and previous mammogram results.</li>
                           <li><strong>Don't Panic:</strong> Remember this is a screening tool. Confirmation requires professional diagnosis.</li>
                         </ul>
-                        
+
                         <h4 className="details-heading" style={{ marginTop: '20px' }}>Follow-Up Diagnostic Tests</h4>
                         <ul className="details-list">
                           <li><strong>Diagnostic Mammogram:</strong> More detailed imaging of suspicious areas</li>
@@ -793,7 +785,7 @@ function AppContent() {
                           <li><strong>MRI (if recommended):</strong> Provides detailed breast tissue images</li>
                           <li><strong>Biopsy:</strong> The only way to definitively diagnose cancer (if abnormalities confirmed)</li>
                         </ul>
-                        
+
                         <h4 className="details-heading" style={{ marginTop: '20px' }}>Questions to Ask Your Doctor</h4>
                         <ul className="details-list">
                           <li>What additional tests do you recommend?</li>
@@ -810,7 +802,7 @@ function AppContent() {
                             ✓ Positive Results - Continue Preventive Care
                           </p>
                         </div>
-                        
+
                         <h4 className="details-heading" style={{ marginTop: '20px' }}>Recommended Actions</h4>
                         <ul className="details-list">
                           <li><strong>Continue Regular Screenings:</strong> Follow age-appropriate screening guidelines (annual or biennial mammograms).</li>
@@ -818,7 +810,7 @@ function AppContent() {
                           <li><strong>Share Results with Doctor:</strong> Discuss these findings at your next routine check-up.</li>
                           <li><strong>Stay Vigilant:</strong> Report any new lumps, changes in breast appearance, or symptoms to your doctor.</li>
                         </ul>
-                        
+
                         <h4 className="details-heading" style={{ marginTop: '20px' }}>Preventive Health Measures</h4>
                         <ul className="details-list">
                           <li><strong>Maintain Healthy Weight:</strong> Obesity increases breast cancer risk</li>
@@ -827,7 +819,7 @@ function AppContent() {
                           <li><strong>Healthy Diet:</strong> Focus on fruits, vegetables, whole grains</li>
                           <li><strong>Know Your Family History:</strong> Inform your doctor if there's a family history of breast cancer</li>
                         </ul>
-                        
+
                         <h4 className="details-heading" style={{ marginTop: '20px' }}>When to Seek Immediate Medical Attention</h4>
                         <ul className="details-list">
                           <li>New lump or thickening in breast or underarm</li>
@@ -838,10 +830,10 @@ function AppContent() {
                         </ul>
                       </div>
                     )}
-                    
+
                     <div style={{ marginTop: '20px', padding: '14px', background: 'rgba(192, 37, 108, 0.08)', borderRadius: '10px' }}>
                       <p style={{ margin: 0, fontSize: '0.95rem', lineHeight: '1.7' }}>
-                        <strong>Remember:</strong> This AI analysis is a supplementary screening tool. All findings should be 
+                        <strong>Remember:</strong> This AI analysis is a supplementary screening tool. All findings should be
                         reviewed and confirmed by qualified healthcare professionals. When in doubt, always consult your doctor.
                       </p>
                     </div>

@@ -2,6 +2,8 @@
   padding: 24px;
   max-width: 1400px;
   margin: 0 auto;
+  background: #FFFFFF;
+  min-height: 100vh;
 }
 
 .screening-header {
@@ -10,10 +12,9 @@
   align-items: center;
   margin-bottom: 24px;
   padding: 20px;
-  background: #FFFFFF;
+  background: #F8FAFC;
   border-radius: 12px;
   border: 2px solid #E2E8F0;
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
 }
 
 .screening-header h2 {
@@ -177,12 +178,12 @@
 }
 
 .btn-primary {
-  background: #3B82F6;
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
   color: white;
 }
 
 .btn-primary:hover:not(:disabled) {
-  background: #2563EB;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   transform: translateY(-1px);
   box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
 }
@@ -292,7 +293,8 @@
 
 .result-card.primary {
   background: #FFFFFF;
-  border-color: #3b82f6;
+  border-color: #3B82F6;
+  border-width: 2px;
 }
 
 .result-card h4 {
@@ -332,7 +334,7 @@
   font-size: 14px;
 }
 
-.prob-item > span:first-child {
+.prob-item>span:first-child {
   font-weight: 600;
   min-width: 80px;
 }
@@ -351,14 +353,14 @@
 }
 
 .prob-fill.malignant {
-  background: #DC2626;
+  background: linear-gradient(90deg, #dc2626 0%, #991b1b 100%);
 }
 
 .prob-fill.benign {
-  background: #10B981;
+  background: linear-gradient(90deg, #10b981 0%, #059669 100%);
 }
 
-.prob-item > span:last-child {
+.prob-item>span:last-child {
   font-weight: 700;
   min-width: 50px;
   text-align: right;
@@ -416,4 +418,3 @@
     width: 100%;
   }
 }
-
