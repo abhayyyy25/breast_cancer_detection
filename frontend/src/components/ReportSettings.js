@@ -6,10 +6,9 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '../context/AuthContext';
+import { API_BASE_URL } from '../config/api';
 import '../styles/enterpriseDesignSystem.css';
 import './ReportSettings.css';
-
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
 
 function ReportSettings({ onBack }) {
     const { user } = useAuth();
@@ -41,7 +40,7 @@ function ReportSettings({ onBack }) {
 
     const fetchSettings = async () => {
         try {
-            const response = await fetch(`${API_BASE_URL}/api/report-settings`, {
+            const response = await fetch(`${API_BASE_URL}/report-settings`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
@@ -120,7 +119,7 @@ function ReportSettings({ onBack }) {
         formData.append('file', logoFile);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/report-settings/upload-logo`, {
+            const response = await fetch(`${API_BASE_URL}/report-settings/upload-logo`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -148,7 +147,7 @@ function ReportSettings({ onBack }) {
         formData.append('file', signatureFile);
 
         try {
-            const response = await fetch(`${API_BASE_URL}/api/report-settings/upload-signature`, {
+            const response = await fetch(`${API_BASE_URL}/report-settings/upload-signature`, {
                 method: 'POST',
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -185,7 +184,7 @@ function ReportSettings({ onBack }) {
             }
 
             // Save settings
-            const response = await fetch(`${API_BASE_URL}/api/report-settings`, {
+            const response = await fetch(`${API_BASE_URL}/report-settings`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

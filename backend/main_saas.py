@@ -34,7 +34,7 @@ app = FastAPI(
 
 allowed_origins = os.getenv(
     "ALLOWED_ORIGINS",
-    "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,https://breast-cancer-detection-frontend.onrender.com,https://breast-cancer-detection-ra6i.onrender.com"
+    "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,https://breast-cancer-detection-frontend.onrender.com"
 ).split(",")
 
 # Clean up and deduplicate origins
