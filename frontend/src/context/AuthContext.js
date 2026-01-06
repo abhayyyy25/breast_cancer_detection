@@ -3,9 +3,6 @@ import { API_BASE_URL } from '../config/api';
 
 const AuthContext = createContext(null);
 
-// Log the configured API base URL for debugging
-console.log('🌐 API_BASE_URL configured as:', API_BASE_URL);
-
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
