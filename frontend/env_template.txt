@@ -1,3 +1,41 @@
-# Backend API URL - FIXED TO PORT 8001
-REACT_APP_API_URL=http://localhost:8001
+# ============================================================================
+# REACT FRONTEND - ENVIRONMENT VARIABLES
+# ============================================================================
+
+# Backend API Base URL
+# For Development (Local Backend):
+REACT_APP_API_URL=http://localhost:8000/api
+
+# For Production (Deployed Backend on Render):
+# REACT_APP_API_URL=https://breast-cancer-detection-ra6i.onrender.com/api
+
+# ============================================================================
+# INSTRUCTIONS
+# ============================================================================
+
+# 1. Copy this file to .env in the same directory:
+#    cp env_template.txt .env
+
+# 2. For local development:
+#    - Use: REACT_APP_API_URL=http://localhost:8000/api
+#    - Make sure your backend is running on port 8000
+
+# 3. For production deployment on Render:
+#    - Set environment variable in Render dashboard:
+#    - Key: REACT_APP_API_URL
+#    - Value: https://breast-cancer-detection-ra6i.onrender.com/api
+
+# 4. For production deployment on Vercel:
+#    - Add environment variable in Vercel dashboard
+#    - Name: REACT_APP_API_URL
+#    - Value: https://breast-cancer-detection-ra6i.onrender.com/api
+
+# ============================================================================
+# NOTES
+# ============================================================================
+
+# - ALL React environment variables MUST start with REACT_APP_
+# - Changes to .env require restarting the development server (npm start)
+# - In production, environment variables are set in the hosting platform
+# - Never commit .env file to git (it's in .gitignore)
 
