@@ -48,7 +48,7 @@
 
 .settings-section h3 {
   margin-bottom: var(--eds-space-6);
-  color: var(--eds-color-primary);
+  color: #1E40AF; /* Darker blue (text-blue-800) for better readability */
 }
 
 .form-group {
@@ -59,7 +59,10 @@
   display: block;
   margin-bottom: var(--eds-space-2);
   font-weight: 600;
-  color: var(--eds-color-text);
+  color: #111827; /* Dark gray (text-gray-900) for better readability */
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.025em;
 }
 
 .form-group input.eds-input,
@@ -215,7 +218,7 @@
   gap: var(--eds-space-2);
   cursor: pointer;
   font-size: 14px;
-  color: var(--eds-color-text);
+  color: #111827; /* Dark gray (text-gray-900) for better readability */
 }
 
 .checkbox-label input[type="checkbox"] {
@@ -242,7 +245,7 @@
 .info-list {
   margin: 0;
   padding-left: var(--eds-space-6);
-  color: var(--eds-color-text);
+  color: #1F2937; /* Dark gray (text-gray-800) */
 }
 
 .info-list li {
