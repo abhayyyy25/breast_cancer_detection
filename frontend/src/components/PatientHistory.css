@@ -460,23 +460,25 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #ffffff; /* White background for clean look */
   padding: 28px 32px;
   border-radius: 16px;
-  color: white;
+  color: #111827; /* Dark gray text for readability on white */
   margin-bottom: 24px;
+  border: 2px solid #e5e7eb; /* Light border to define the banner */
 }
 
 .all-patients-view .header-title h1 {
   margin: 0;
   font-size: 32px;
   font-weight: 700;
+  color: #111827; /* Dark text for maximum readability */
 }
 
 .all-patients-view .header-title .subtitle {
   margin: 8px 0 0 0;
   font-size: 15px;
-  opacity: 0.9;
+  color: #6b7280; /* Medium gray for subtitle */
 }
 
 .all-patients-view .header-stats {
@@ -485,11 +487,12 @@
 }
 
 .all-patients-view .stat-badge {
-  background: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%); /* Magenta gradient for stats */
   padding: 16px 24px;
   border-radius: 12px;
   text-align: center;
-  border: 2px solid rgba(255, 255, 255, 0.2);
+  border: 2px solid #f9a8d4;
+  color: white; /* White text on magenta background */
 }
 
 .all-patients-view .stat-number {
@@ -497,12 +500,13 @@
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 4px;
+  color: white; /* Ensure white text on magenta */
 }
 
 .all-patients-view .stat-label {
   display: block;
   font-size: 13px;
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
 }
 
 /* Search and Filter Bar */
