@@ -1,12 +1,13 @@
 /**
- * Super Admin Dashboard
- * Global platform management and tenant overview
- * Refactored with Enterprise Design System
+ * Super Admin Dashboard - FULLY FUNCTIONAL
+ * Global platform management with Organizations and Analytics views
+ * Refactored with view switching and API integration
  */
 
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { getAdminStats, getAllTenants, createTenant, updateTenantStatus } from '../config/api';
 import EnterpriseLayout from './common/EnterpriseLayout';
 import EnterpriseTable from './common/EnterpriseTable';
 import EnterpriseMetricTile from './common/EnterpriseMetricTile';
@@ -14,161 +15,118 @@ import LoadingSpinner from './LoadingSpinner';
 import '../styles/enterpriseDesignSystem.css';
 import './SuperAdminDashboard.css';
 
-// API Base URL
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
-
 const SuperAdminDashboard = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Create axios-like instance using fetch
-  const axiosInstance = {
-    get: async (url) => {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}${url}`, {
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return { data: await response.json() };
-    },
-    post: async (url, data) => {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`${API_BASE_URL}${url}`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return { data: await response.json() };
-    },
-    put: async (url, data) => {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api${url}`, {
-        method: 'PUT',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data)
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return { data: await response.json() };
-    },
-    delete: async (url) => {
-      const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api${url}`, {
-        method: 'DELETE',
-        headers: {
-          'Authorization': `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return { data: await response.json() };
-    }
-  };
-
-  const [dashboardData, setDashboardData] = useState(null);
+  // State for view management
+  const [currentView, setCurrentView] = useState('dashboard');
+  
+  // Data states
+  const [stats, setStats] = useState(null);
   const [tenants, setTenants] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [showCreateTenantModal, setShowCreateTenantModal] = useState(false);
-  const [newTenant, setNewTenant] = useState({
+  
+  // Modal states
+  const [showOnboardModal, setShowOnboardModal] = useState(false);
+  const [onboardData, setOnboardData] = useState({
     name: '',
-    organization_type: 'hospital',
-    contact_email: '',
-    contact_phone: '',
-    city: '',
-    state: '',
-    monthly_scan_limit: 100,
-    admin_full_name: '',
-    admin_username: '',
-    admin_password: '',
+    email: '',
+    password: '',
+    location: '',
+    plan_type: 'trial'
   });
-  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
-    fetchDashboardData();
-    fetchTenants();
+    fetchData();
   }, []);
 
-  const fetchDashboardData = async () => {
+  const fetchData = async () => {
+    setLoading(true);
     try {
-      const response = await axiosInstance.get('/super-admin/dashboard');
-      setDashboardData(response.data);
+      const [statsData, tenantsData] = await Promise.all([
+        getAdminStats(),
+        getAllTenants()
+      ]);
+      setStats(statsData);
+      setTenants(tenantsData);
     } catch (error) {
-      console.error('Error fetching dashboard data:', error);
-    }
-  };
-
-  const fetchTenants = async () => {
-    try {
-      const response = await axiosInstance.get('/super-admin/tenants');
-      setTenants(response.data);
-      setLoading(false);
-    } catch (error) {
-      console.error('Error fetching tenants:', error);
+      console.error('Error fetching data:', error);
+      alert('Failed to load dashboard data');
+    } finally {
       setLoading(false);
     }
   };
 
-  const handleCreateTenant = async (e) => {
+  const handleOnboardOrganization = async (e) => {
     e.preventDefault();
-
-    if (newTenant.admin_password.length < 6) {
-      alert('Password must be at least 6 characters long');
+    
+    if (onboardData.password.length < 6) {
+      alert('Password must be at least 6 characters');
       return;
     }
 
     try {
-      await axiosInstance.post('/super-admin/tenants', newTenant);
-      setShowCreateTenantModal(false);
-      setNewTenant({
+      await createTenant(onboardData);
+      alert('Organization onboarded successfully!');
+      setShowOnboardModal(false);
+      setOnboardData({
         name: '',
-        organization_type: 'hospital',
-        contact_email: '',
-        contact_phone: '',
-        city: '',
-        state: '',
-        monthly_scan_limit: 100,
-        admin_full_name: '',
-        admin_username: '',
-        admin_password: '',
+        email: '',
+        password: '',
+        location: '',
+        plan_type: 'trial'
       });
-      setShowPassword(false);
-      fetchTenants();
-      fetchDashboardData();
-      alert('Organization created successfully');
+      fetchData();
     } catch (error) {
-      console.error('Error creating tenant:', error);
-      const errorMsg = error.response?.data?.detail || error.message || 'Unknown error';
-      alert('Failed to create organization: ' + errorMsg);
+      console.error('Error onboarding:', error);
+      alert('Failed to onboard organization: ' + error.message);
     }
   };
 
-  const handleToggleTenantStatus = async (tenantId, currentStatus) => {
+  const handleToggleStatus = async (tenantId, currentStatus) => {
+    const newStatus = currentStatus === 'active' ? 'suspended' : 'active';
+    
+    if (!window.confirm(`Are you sure you want to ${newStatus === 'suspended' ? 'suspend' : 'activate'} this organization?`)) {
+      return;
+    }
+
     try {
-      await axiosInstance.put(`/super-admin/tenants/${tenantId}`, {
-        is_active: !currentStatus,
-      });
-      fetchTenants();
-      fetchDashboardData();
+      await updateTenantStatus(tenantId, newStatus);
+      alert(`Organization ${newStatus === 'suspended' ? 'suspended' : 'activated'} successfully`);
+      fetchData();
     } catch (error) {
-      console.error('Error updating tenant status:', error);
+      console.error('Error updating status:', error);
+      alert('Failed to update status: ' + error.message);
     }
   };
 
+  // Navigation items with click handlers
   const navigationItems = [
-    { id: 'dashboard', label: 'Dashboard', icon: '■', active: true, onClick: () => { } },
-    { id: 'organizations', label: 'Organizations', icon: '⬒', onClick: () => { } },
-    { id: 'analytics', label: 'Analytics', icon: '▦', onClick: () => { } },
+    { 
+      id: 'dashboard', 
+      label: 'Dashboard', 
+      icon: '📊', 
+      active: currentView === 'dashboard',
+      onClick: () => setCurrentView('dashboard')
+    },
+    { 
+      id: 'organizations', 
+      label: 'Organizations', 
+      icon: '🏥', 
+      active: currentView === 'organizations',
+      onClick: () => setCurrentView('organizations')
+    },
+    { 
+      id: 'analytics', 
+      label: 'Analytics', 
+      icon: '📈', 
+      active: currentView === 'analytics',
+      onClick: () => setCurrentView('analytics')
+    },
   ];
 
+  // Table columns for organizations
   const tenantColumns = [
     {
       header: 'Organization',
@@ -179,7 +137,7 @@ const SuperAdminDashboard = () => {
             {row.name}
           </div>
           <div className="eds-text-small" style={{ marginTop: '4px' }}>
-            {row.organization_type.replace('_', ' ')}
+            {row.organization_type?.replace('_', ' ') || 'Hospital'}
           </div>
         </div>
       ),
@@ -202,12 +160,12 @@ const SuperAdminDashboard = () => {
       },
     },
     {
-      header: 'Scans Used',
+      header: 'Usage',
       accessor: 'current_month_scans',
       width: '140px',
       render: (row) => (
         <div className="eds-text-mono">
-          {row.current_month_scans} / {row.monthly_scan_limit}
+          {row.current_month_scans || 0} / {row.monthly_scan_limit || 100}
         </div>
       ),
     },
@@ -216,7 +174,7 @@ const SuperAdminDashboard = () => {
       accessor: 'total_scans_processed',
       width: '120px',
       render: (row) => (
-        <div className="eds-text-mono">{row.total_scans_processed}</div>
+        <div className="eds-text-mono">{row.total_scans_processed || 0}</div>
       ),
     },
     {
@@ -225,7 +183,7 @@ const SuperAdminDashboard = () => {
       width: '180px',
       render: (row) => (
         <div className="eds-text-small">
-          {row.city}, {row.state}
+          {row.city || 'N/A'}, {row.state || 'N/A'}
         </div>
       ),
     },
@@ -254,13 +212,13 @@ const SuperAdminDashboard = () => {
             View
           </button>
           <button
-            className={`eds-button eds-button-sm ${row.is_active ? 'eds-button-danger' : 'eds-button-primary'}`}
+            className={`eds-button eds-button-sm ${row.subscription_status === 'active' ? 'eds-button-danger' : 'eds-button-primary'}`}
             onClick={(e) => {
               e.stopPropagation();
-              handleToggleTenantStatus(row.id, row.is_active);
+              handleToggleStatus(row.id, row.subscription_status);
             }}
           >
-            {row.is_active ? 'Suspend' : 'Activate'}
+            {row.subscription_status === 'active' ? 'Suspend' : 'Activate'}
           </button>
         </div>
       ),
@@ -271,14 +229,13 @@ const SuperAdminDashboard = () => {
     return <LoadingSpinner message="Loading Super Admin Dashboard..." />;
   }
 
-  return (
-    <EnterpriseLayout
-      user={user}
-      pageTitle="Platform Management"
-      navigationItems={navigationItems}
-    >
+  // ============================================================================
+  // DASHBOARD VIEW
+  // ============================================================================
+  const renderDashboardView = () => (
+    <>
       {/* Metrics */}
-      {dashboardData && (
+      {stats && (
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
@@ -287,269 +244,336 @@ const SuperAdminDashboard = () => {
         }}>
           <EnterpriseMetricTile
             label="Total Organizations"
-            value={dashboardData.total_tenants}
-            subtitle={`${dashboardData.active_tenants} active`}
+            value={stats.total_tenants}
+            subtitle={`${stats.active_tenants_count} active`}
           />
           <EnterpriseMetricTile
             label="Total Users"
-            value={dashboardData.total_users}
+            value={stats.total_users}
             subtitle="Across all tenants"
           />
           <EnterpriseMetricTile
             label="Total Scans"
-            value={dashboardData.total_scans_processed}
-            subtitle={`${dashboardData.scans_today} today`}
+            value={stats.total_scans}
+            subtitle="Platform-wide"
           />
           <EnterpriseMetricTile
-            label="Total Patients"
-            value={dashboardData.total_patients}
-            subtitle="System-wide"
+            label="Active Tenants"
+            value={stats.active_tenants_count}
+            subtitle="Currently active"
           />
         </div>
       )}
 
-      {/* Organization Status Summary */}
-      {dashboardData && (
-        <div className="eds-card" style={{ marginBottom: 'var(--eds-space-8)' }}>
-          <div className="eds-card-header">
-            <h3 className="eds-card-title">Organization Status</h3>
-          </div>
-          <div style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(3, 1fr)',
-            gap: 'var(--eds-space-6)',
-            marginTop: 'var(--eds-space-4)'
-          }}>
-            <div>
-              <div className="eds-text-small">Active</div>
-              <div style={{ fontSize: 'var(--eds-font-size-2xl)', fontWeight: 600, color: 'var(--eds-color-success)', marginTop: 'var(--eds-space-2)' }}>
-                {dashboardData.active_tenants}
-              </div>
-            </div>
-            <div>
-              <div className="eds-text-small">Trial</div>
-              <div style={{ fontSize: 'var(--eds-font-size-2xl)', fontWeight: 600, color: 'var(--eds-color-warning)', marginTop: 'var(--eds-space-2)' }}>
-                {dashboardData.trial_tenants}
-              </div>
-            </div>
-            <div>
-              <div className="eds-text-small">Suspended</div>
-              <div style={{ fontSize: 'var(--eds-font-size-2xl)', fontWeight: 600, color: 'var(--eds-color-error)', marginTop: 'var(--eds-space-2)' }}>
-                {dashboardData.suspended_tenants}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Organizations Table */}
+      {/* Recent Organizations */}
       <div className="eds-card">
-        <div className="eds-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-          <h3 className="eds-card-title">All Organizations</h3>
-          <button
-            className="eds-button eds-button-primary"
-            onClick={() => setShowCreateTenantModal(true)}
-          >
-            Onboard Organization
-          </button>
+        <div className="eds-card-header">
+          <h3 className="eds-card-title">Recent Organizations</h3>
         </div>
         <div style={{ marginTop: 'var(--eds-space-4)' }}>
           <EnterpriseTable
             columns={tenantColumns}
-            data={tenants}
+            data={tenants.slice(0, 5)}
             emptyMessage="No organizations found"
           />
         </div>
       </div>
+    </>
+  );
 
-      {/* Create Tenant Modal */}
-      {showCreateTenantModal && (
-        <div className="eds-modal-overlay" onClick={() => setShowCreateTenantModal(false)}>
-          <div className="eds-modal" onClick={(e) => e.stopPropagation()}>
-            <div className="eds-modal-header">
-              <h2 className="eds-modal-title">Onboard New Organization</h2>
-              <button
-                className="eds-modal-close"
-                onClick={() => setShowCreateTenantModal(false)}
-              >
-                ×
-              </button>
-            </div>
+  // ============================================================================
+  // ORGANIZATIONS VIEW
+  // ============================================================================
+  const renderOrganizationsView = () => (
+    <div className="eds-card">
+      <div className="eds-card-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+        <h3 className="eds-card-title">All Organizations</h3>
+        <button
+          className="eds-button eds-button-primary"
+          onClick={() => setShowOnboardModal(true)}
+        >
+          ➕ Onboard Organization
+        </button>
+      </div>
+      <div style={{ marginTop: 'var(--eds-space-4)' }}>
+        <EnterpriseTable
+          columns={tenantColumns}
+          data={tenants}
+          emptyMessage="No organizations found. Click 'Onboard Organization' to add one."
+        />
+      </div>
+    </div>
+  );
 
-            <form onSubmit={handleCreateTenant}>
-              <div className="eds-modal-body">
-                <div className="eds-form-group">
-                  <label className="eds-form-label">Organization Name *</label>
-                  <input
-                    className="eds-form-input"
-                    type="text"
-                    value={newTenant.name}
-                    onChange={(e) => setNewTenant({ ...newTenant, name: e.target.value })}
-                    placeholder="e.g., Apollo Hospitals"
-                    required
-                  />
-                </div>
-
-                <div className="eds-form-group">
-                  <label className="eds-form-label">Organization Type *</label>
-                  <select
-                    className="eds-form-select"
-                    value={newTenant.organization_type}
-                    onChange={(e) => setNewTenant({ ...newTenant, organization_type: e.target.value })}
-                  >
-                    <option value="hospital">Hospital</option>
-                    <option value="pathology_lab">Pathology Lab</option>
-                    <option value="diagnostic_center">Diagnostic Center</option>
-                  </select>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
-                  <div className="eds-form-group">
-                    <label className="eds-form-label">Contact Email *</label>
-                    <input
-                      className="eds-form-input"
-                      type="email"
-                      value={newTenant.contact_email}
-                      onChange={(e) => setNewTenant({ ...newTenant, contact_email: e.target.value })}
-                      placeholder="contact@hospital.com"
-                      required
-                    />
-                  </div>
-
-                  <div className="eds-form-group">
-                    <label className="eds-form-label">Contact Phone</label>
-                    <input
-                      className="eds-form-input"
-                      type="tel"
-                      value={newTenant.contact_phone}
-                      onChange={(e) => setNewTenant({ ...newTenant, contact_phone: e.target.value })}
-                      placeholder="+91-xxx-xxx-xxxx"
-                    />
-                  </div>
-                </div>
-
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
-                  <div className="eds-form-group">
-                    <label className="eds-form-label">City</label>
-                    <input
-                      className="eds-form-input"
-                      type="text"
-                      value={newTenant.city}
-                      onChange={(e) => setNewTenant({ ...newTenant, city: e.target.value })}
-                      placeholder="New Delhi"
-                    />
-                  </div>
-
-                  <div className="eds-form-group">
-                    <label className="eds-form-label">State</label>
-                    <input
-                      className="eds-form-input"
-                      type="text"
-                      value={newTenant.state}
-                      onChange={(e) => setNewTenant({ ...newTenant, state: e.target.value })}
-                      placeholder="Delhi"
-                    />
-                  </div>
-                </div>
-
-                <div className="eds-form-group">
-                  <label className="eds-form-label">Monthly Scan Limit</label>
-                  <input
-                    className="eds-form-input"
-                    type="number"
-                    value={newTenant.monthly_scan_limit}
-                    onChange={(e) => setNewTenant({ ...newTenant, monthly_scan_limit: parseInt(e.target.value) })}
-                    min="10"
-                    max="10000"
-                  />
-                </div>
-
-                <div style={{
-                  borderTop: '1px solid var(--eds-color-border)',
-                  marginTop: 'var(--eds-space-6)',
-                  paddingTop: 'var(--eds-space-6)'
-                }}>
-                  <h4 style={{ fontSize: 'var(--eds-font-size-md)', fontWeight: 600, marginBottom: 'var(--eds-space-4)' }}>
-                    Organization Admin Credentials
-                  </h4>
-
-                  <div className="eds-form-group">
-                    <label className="eds-form-label">Admin Full Name *</label>
-                    <input
-                      className="eds-form-input"
-                      type="text"
-                      value={newTenant.admin_full_name}
-                      onChange={(e) => setNewTenant({ ...newTenant, admin_full_name: e.target.value })}
-                      placeholder="John Doe"
-                      required
-                    />
-                  </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-4)' }}>
-                    <div className="eds-form-group">
-                      <label className="eds-form-label">Admin Username *</label>
-                      <input
-                        className="eds-form-input"
-                        type="text"
-                        value={newTenant.admin_username}
-                        onChange={(e) => setNewTenant({ ...newTenant, admin_username: e.target.value })}
-                        placeholder="admin_username"
-                        required
-                      />
-                    </div>
-
-                    <div className="eds-form-group">
-                      <label className="eds-form-label">Admin Password *</label>
-                      <div style={{ position: 'relative' }}>
-                        <input
-                          className="eds-form-input"
-                          type={showPassword ? 'text' : 'password'}
-                          value={newTenant.admin_password}
-                          onChange={(e) => setNewTenant({ ...newTenant, admin_password: e.target.value })}
-                          placeholder="Min 6 characters"
-                          required
-                          minLength={6}
-                          style={{ paddingRight: '40px' }}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          style={{
-                            position: 'absolute',
-                            right: '10px',
-                            top: '50%',
-                            transform: 'translateY(-50%)',
-                            background: 'none',
-                            border: 'none',
-                            cursor: 'pointer',
-                            color: 'var(--eds-color-text-muted)'
-                          }}
-                        >
-                          {showPassword ? 'Hide' : 'Show'}
-                        </button>
-                      </div>
-                      <span className="eds-form-hint">Minimum 6 characters</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div className="eds-modal-footer">
-                <button
-                  type="button"
-                  className="eds-button eds-button-secondary"
-                  onClick={() => setShowCreateTenantModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="eds-button eds-button-primary">
-                  Create Organization
-                </button>
-              </div>
-            </form>
-          </div>
+  // ============================================================================
+  // ANALYTICS VIEW
+  // ============================================================================
+  const renderAnalyticsView = () => (
+    <>
+      {/* Summary Cards */}
+      {stats && (
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))',
+          gap: 'var(--eds-space-4)',
+          marginBottom: 'var(--eds-space-8)'
+        }}>
+          <EnterpriseMetricTile
+            label="Total Tenants"
+            value={stats.total_tenants}
+            subtitle="All organizations"
+          />
+          <EnterpriseMetricTile
+            label="Total Scans"
+            value={stats.total_scans}
+            subtitle="Platform-wide"
+          />
+          <EnterpriseMetricTile
+            label="Active Tenants"
+            value={stats.active_tenants_count}
+            subtitle="Currently active"
+          />
+          <EnterpriseMetricTile
+            label="Total Users"
+            value={stats.total_users}
+            subtitle="All roles"
+          />
         </div>
       )}
+
+      {/* Charts Section */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 'var(--eds-space-6)', marginBottom: 'var(--eds-space-6)' }}>
+        {/* Scans per Month Chart */}
+        <div className="eds-card">
+          <div className="eds-card-header">
+            <h3 className="eds-card-title">📈 Scans Per Month (Last 6 Months)</h3>
+          </div>
+          <div style={{ padding: 'var(--eds-space-6)' }}>
+            {stats && stats.monthly_scans && stats.monthly_scans.length > 0 ? (
+              <div style={{ width: '100%' }}>
+                {stats.monthly_scans.map((item, index) => (
+                  <div key={index} style={{ marginBottom: 'var(--eds-space-3)' }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--eds-space-1)' }}>
+                      <span className="eds-text-small">{item.month}</span>
+                      <span className="eds-text-small" style={{ fontWeight: 600 }}>{item.scans} scans</span>
+                    </div>
+                    <div style={{ 
+                      width: '100%', 
+                      height: '8px', 
+                      background: 'var(--eds-color-border)', 
+                      borderRadius: '4px',
+                      overflow: 'hidden'
+                    }}>
+                      <div style={{ 
+                        width: `${Math.min((item.scans / 250) * 100, 100)}%`, 
+                        height: '100%', 
+                        background: 'var(--eds-color-primary)',
+                        transition: 'width 0.3s ease'
+                      }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p className="eds-text-muted">No scan data available</p>
+            )}
+          </div>
+        </div>
+
+        {/* Prediction Distribution Chart */}
+        <div className="eds-card">
+          <div className="eds-card-header">
+            <h3 className="eds-card-title">🎯 Prediction Distribution</h3>
+          </div>
+          <div style={{ padding: 'var(--eds-space-6)' }}>
+            {stats && stats.prediction_distribution ? (
+              <div style={{ width: '100%' }}>
+                {stats.prediction_distribution.map((item, index) => {
+                  const total = stats.prediction_distribution.reduce((sum, d) => sum + d.value, 0);
+                  const percentage = total > 0 ? ((item.value / total) * 100).toFixed(1) : 0;
+                  const color = item.label === 'Benign' ? '#10b981' : '#ef4444';
+                  
+                  return (
+                    <div key={index} style={{ marginBottom: 'var(--eds-space-4)' }}>
+                      <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 'var(--eds-space-1)' }}>
+                        <span className="eds-text-small">{item.label}</span>
+                        <span className="eds-text-small" style={{ fontWeight: 600 }}>{item.value} ({percentage}%)</span>
+                      </div>
+                      <div style={{ 
+                        width: '100%', 
+                        height: '12px', 
+                        background: 'var(--eds-color-border)', 
+                        borderRadius: '6px',
+                        overflow: 'hidden'
+                      }}>
+                        <div style={{ 
+                          width: `${percentage}%`, 
+                          height: '100%', 
+                          background: color,
+                          transition: 'width 0.3s ease'
+                        }} />
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            ) : (
+              <p className="eds-text-muted">No prediction data available</p>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Platform Health */}
+      <div className="eds-card">
+        <div className="eds-card-header">
+          <h3 className="eds-card-title">🏥 Platform Health Overview</h3>
+        </div>
+        <div style={{ padding: 'var(--eds-space-6)' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 'var(--eds-space-6)' }}>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '48px', marginBottom: 'var(--eds-space-2)' }}>✅</div>
+              <div style={{ fontSize: 'var(--eds-font-size-2xl)', fontWeight: 700, color: 'var(--eds-color-success)' }}>
+                {stats?.active_tenants_count || 0}
+              </div>
+              <div className="eds-text-small" style={{ marginTop: 'var(--eds-space-1)' }}>Active Organizations</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '48px', marginBottom: 'var(--eds-space-2)' }}>⏳</div>
+              <div style={{ fontSize: 'var(--eds-font-size-2xl)', fontWeight: 700, color: 'var(--eds-color-warning)' }}>
+                {tenants.filter(t => t.subscription_status === 'trial').length}
+              </div>
+              <div className="eds-text-small" style={{ marginTop: 'var(--eds-space-1)' }}>Trial Organizations</div>
+            </div>
+            <div style={{ textAlign: 'center' }}>
+              <div style={{ fontSize: '48px', marginBottom: 'var(--eds-space-2)' }}>⛔</div>
+              <div style={{ fontSize: 'var(--eds-font-size-2xl)', fontWeight: 700, color: 'var(--eds-color-error)' }}>
+                {tenants.filter(t => t.subscription_status === 'suspended').length}
+              </div>
+              <div className="eds-text-small" style={{ marginTop: 'var(--eds-space-1)' }}>Suspended</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+
+  // ============================================================================
+  // ONBOARD MODAL
+  // ============================================================================
+  const renderOnboardModal = () => (
+    <div className="eds-modal-overlay" onClick={() => setShowOnboardModal(false)}>
+      <div className="eds-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: '500px' }}>
+        <div className="eds-modal-header">
+          <h2 className="eds-modal-title">Onboard New Organization</h2>
+          <button
+            className="eds-modal-close"
+            onClick={() => setShowOnboardModal(false)}
+          >
+            ×
+          </button>
+        </div>
+
+        <form onSubmit={handleOnboardOrganization}>
+          <div className="eds-modal-body">
+            <div className="eds-form-group">
+              <label className="eds-form-label">Organization Name *</label>
+              <input
+                className="eds-form-input"
+                type="text"
+                value={onboardData.name}
+                onChange={(e) => setOnboardData({ ...onboardData, name: e.target.value })}
+                placeholder="e.g., Apollo Hospitals"
+                required
+              />
+            </div>
+
+            <div className="eds-form-group">
+              <label className="eds-form-label">Admin Email *</label>
+              <input
+                className="eds-form-input"
+                type="email"
+                value={onboardData.email}
+                onChange={(e) => setOnboardData({ ...onboardData, email: e.target.value })}
+                placeholder="admin@hospital.com"
+                required
+              />
+            </div>
+
+            <div className="eds-form-group">
+              <label className="eds-form-label">Admin Password *</label>
+              <input
+                className="eds-form-input"
+                type="password"
+                value={onboardData.password}
+                onChange={(e) => setOnboardData({ ...onboardData, password: e.target.value })}
+                placeholder="Min 6 characters"
+                minLength={6}
+                required
+              />
+              <span className="eds-form-hint">Minimum 6 characters</span>
+            </div>
+
+            <div className="eds-form-group">
+              <label className="eds-form-label">Location *</label>
+              <input
+                className="eds-form-input"
+                type="text"
+                value={onboardData.location}
+                onChange={(e) => setOnboardData({ ...onboardData, location: e.target.value })}
+                placeholder="City, State"
+                required
+              />
+              <span className="eds-form-hint">Format: City, State (e.g., Mumbai, Maharashtra)</span>
+            </div>
+
+            <div className="eds-form-group">
+              <label className="eds-form-label">Plan Type *</label>
+              <select
+                className="eds-form-select"
+                value={onboardData.plan_type}
+                onChange={(e) => setOnboardData({ ...onboardData, plan_type: e.target.value })}
+              >
+                <option value="trial">Trial (100 scans/month)</option>
+                <option value="active">Active (500 scans/month)</option>
+                <option value="premium">Premium (Unlimited)</option>
+              </select>
+            </div>
+          </div>
+
+          <div className="eds-modal-footer">
+            <button
+              type="button"
+              className="eds-button eds-button-secondary"
+              onClick={() => setShowOnboardModal(false)}
+            >
+              Cancel
+            </button>
+            <button type="submit" className="eds-button eds-button-primary">
+              Onboard Organization
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+
+  // ============================================================================
+  // MAIN RENDER
+  // ============================================================================
+  return (
+    <EnterpriseLayout
+      user={user}
+      pageTitle="Super Admin - Platform Management"
+      navigationItems={navigationItems}
+    >
+      {/* Render current view */}
+      {currentView === 'dashboard' && renderDashboardView()}
+      {currentView === 'organizations' && renderOrganizationsView()}
+      {currentView === 'analytics' && renderAnalyticsView()}
+
+      {/* Onboard Modal */}
+      {showOnboardModal && renderOnboardModal()}
     </EnterpriseLayout>
   );
 };

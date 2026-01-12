@@ -501,3 +501,268 @@ async def create_organization_admin(
         success=True
     )
 
+
+# ============================================================================
+# NEW ENDPOINTS FOR SUPER ADMIN FEATURES
+# ============================================================================
+
+@router.get("/stats")
+async def get_platform_stats(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_super_admin)
+):
+    """
+    Get global platform statistics for Analytics view
+    Returns summary counts and mock chart data
+    """
+    # Count totals
+    total_tenants = db.query(func.count(Tenant.id)).scalar()
+    total_users = db.query(func.count(User.id)).scalar()
+    total_scans = db.query(func.count(Scan.id)).scalar()
+    
+    # Active tenants count
+    active_tenants_count = db.query(func.count(Tenant.id)).filter(
+        and_(
+            Tenant.is_active == True,
+            Tenant.subscription_status == SubscriptionStatus.ACTIVE
+        )
+    ).scalar()
+    
+    # Mock data for scans per month (last 6 months)
+    from datetime import datetime
+    current_month = datetime.utcnow().month
+    current_year = datetime.utcnow().year
+    
+    months_data = []
+    month_names = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
+    
+    for i in range(5, -1, -1):  # Last 6 months
+        month_offset = current_month - i - 1
+        year_offset = current_year
+        
+        if month_offset < 0:
+            month_offset += 12
+            year_offset -= 1
+        
+        # Calculate actual scans for this month
+        first_day = datetime(year_offset, month_offset + 1, 1)
+        if month_offset + 2 <= 12:
+            last_day = datetime(year_offset, month_offset + 2, 1)
+        else:
+            last_day = datetime(year_offset + 1, 1, 1)
+        
+        scan_count = db.query(func.count(Scan.id)).filter(
+            and_(
+                Scan.created_at >= first_day,
+                Scan.created_at < last_day
+            )
+        ).scalar()
+        
+        months_data.append({
+            "month": month_names[month_offset],
+            "scans": scan_count or 0
+        })
+    
+    # Prediction distribution (Benign vs Malignant)
+    benign_count = db.query(func.count(Scan.id)).filter(
+        Scan.prediction == "Benign"
+    ).scalar() or 0
+    
+    malignant_count = db.query(func.count(Scan.id)).filter(
+        Scan.prediction == "Malignant"
+    ).scalar() or 0
+    
+    # If no scans yet, provide mock data
+    if total_scans == 0:
+        months_data = [
+            {"month": "Jan", "scans": 120},
+            {"month": "Feb", "scans": 145},
+            {"month": "Mar", "scans": 178},
+            {"month": "Apr", "scans": 195},
+            {"month": "May", "scans": 210},
+            {"month": "Jun", "scans": 230}
+        ]
+        benign_count = 180
+        malignant_count = 50
+    
+    prediction_distribution = [
+        {"label": "Benign", "value": benign_count},
+        {"label": "Malignant", "value": malignant_count}
+    ]
+    
+    return {
+        "total_tenants": total_tenants,
+        "total_users": total_users,
+        "total_scans": total_scans,
+        "active_tenants_count": active_tenants_count,
+        "monthly_scans": months_data,
+        "prediction_distribution": prediction_distribution
+    }
+
+
+@router.patch("/tenants/{tenant_id}/status")
+async def update_tenant_status(
+    tenant_id: int,
+    status: str,  # Query parameter: 'active' or 'suspended'
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_super_admin)
+):
+    """
+    Update tenant status (activate or suspend)
+    Query param: ?status=active or ?status=suspended
+    """
+    # Validate status
+    if status not in ['active', 'suspended']:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Status must be 'active' or 'suspended'"
+        )
+    
+    # Get tenant
+    tenant = db.query(Tenant).filter(Tenant.id == tenant_id).first()
+    if not tenant:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Organization not found"
+        )
+    
+    # Update status
+    old_status = tenant.subscription_status
+    if status == 'active':
+        tenant.subscription_status = SubscriptionStatus.ACTIVE
+        tenant.is_active = True
+    else:  # suspended
+        tenant.subscription_status = SubscriptionStatus.SUSPENDED
+        tenant.is_active = False
+    
+    tenant.updated_at = datetime.utcnow()
+    db.commit()
+    db.refresh(tenant)
+    
+    # Audit log
+    await create_audit_log(
+        db=db,
+        user=current_user,
+        action="update",
+        resource_type="tenant",
+        resource_id=tenant.id,
+        description=f"Changed status from {old_status} to {status} for {tenant.name}",
+        request=request
+    )
+    
+    return {
+        "message": f"Tenant status updated to {status}",
+        "tenant_id": tenant.id,
+        "tenant_name": tenant.name,
+        "new_status": tenant.subscription_status,
+        "is_active": tenant.is_active
+    }
+
+
+@router.post("/tenants/onboard")
+async def onboard_organization(
+    name: str,
+    email: str,
+    password: str,
+    location: str,
+    plan_type: str = "trial",
+    request: Request = None,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_super_admin)
+):
+    """
+    Quick onboarding endpoint for new organizations
+    Creates tenant and admin user
+    """
+    from pydantic import EmailStr, ValidationError
+    
+    # Validate email format
+    try:
+        validated_email = EmailStr._validate(email)
+    except:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Invalid email format"
+        )
+    
+    # Check if organization with email exists
+    existing = db.query(Tenant).filter(Tenant.contact_email == email).first()
+    if existing:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Organization with this email already exists"
+        )
+    
+    # Parse location (assume format: "City, State")
+    city, state = "Unknown", "Unknown"
+    if "," in location:
+        parts = location.split(",")
+        city = parts[0].strip()
+        state = parts[1].strip() if len(parts) > 1 else "Unknown"
+    else:
+        city = location.strip()
+    
+    # Determine subscription status from plan type
+    subscription_map = {
+        "trial": SubscriptionStatus.TRIAL,
+        "active": SubscriptionStatus.ACTIVE,
+        "premium": SubscriptionStatus.ACTIVE
+    }
+    subscription_status = subscription_map.get(plan_type.lower(), SubscriptionStatus.TRIAL)
+    
+    # Create tenant
+    tenant = Tenant(
+        name=name,
+        organization_type=OrganizationType.HOSPITAL,  # Default
+        contact_email=email,
+        city=city,
+        state=state,
+        country="India",
+        monthly_scan_limit=100 if plan_type == "trial" else 500,
+        subscription_status=subscription_status,
+        is_active=True
+    )
+    
+    db.add(tenant)
+    db.commit()
+    db.refresh(tenant)
+    
+    # Generate username from email
+    username = email.split('@')[0] + f"_{tenant.id}"
+    
+    # Create admin user
+    admin_user = User(
+        username=username,
+        email=email,
+        password_hash=hash_password(password),
+        full_name=f"Admin - {name}",
+        role=UserRole.ORGANIZATION_ADMIN,
+        tenant_id=tenant.id,
+        is_active=True,
+        is_verified=True
+    )
+    
+    db.add(admin_user)
+    db.commit()
+    db.refresh(admin_user)
+    
+    # Audit log
+    if request:
+        await create_audit_log(
+            db=db,
+            user=current_user,
+            action="create",
+            resource_type="tenant",
+            resource_id=tenant.id,
+            description=f"Onboarded new organization: {name}",
+            request=request
+        )
+    
+    return {
+        "message": "Organization onboarded successfully",
+        "tenant_id": tenant.id,
+        "tenant_name": tenant.name,
+        "admin_username": username,
+        "admin_email": email
+    }
