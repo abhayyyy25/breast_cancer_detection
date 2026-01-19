@@ -620,8 +620,18 @@ async def download_scan_report(
     if not scan.report_path or not os.path.exists(scan.report_path):
         try:
             from report_generator import generate_pdf_report
+            from models_saas import ReportSettings
+            
+            # Fetch patient data
             patient = db.query(Patient).filter(Patient.id == scan.patient_id).first()
-            report_path = generate_pdf_report(scan, patient, current_user)
+            
+            # Fetch report settings for the current user
+            settings_data = db.query(ReportSettings).filter(
+                ReportSettings.user_id == current_user.id
+            ).first()
+            
+            # Generate PDF with settings
+            report_path = generate_pdf_report(scan, patient, current_user, settings_data)
             scan.report_path = report_path
             scan.report_generated = True
             db.commit()

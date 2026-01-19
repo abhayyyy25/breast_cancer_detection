@@ -413,13 +413,18 @@ class ReportSettings(Base):
     # Hospital/Clinic Branding
     hospital_name = Column(String(255), nullable=True)
     hospital_logo_url = Column(String(500), nullable=True)
+    logo_base64 = Column(Text, nullable=True)  # Base64-encoded logo image for database storage
     hospital_address = Column(Text, nullable=True)
     hospital_contact = Column(String(255), nullable=True)
     
     # Doctor Details (Default)
+    doctor_name = Column(String(255), nullable=True)  # Doctor's name for reports
     display_name = Column(String(255), nullable=True)  # e.g., "Dr. Rajesh Sharma, MD"
     license_number = Column(String(100), nullable=True)  # Medical license/registration #
     signature_url = Column(String(500), nullable=True)  # Digital signature image
+    
+    # Report Customization
+    footer_text = Column(Text, nullable=True)  # Custom footer text for PDF reports
     
     # Report Customization
     report_header_color = Column(String(7), default="#2563EB")  # Hex color

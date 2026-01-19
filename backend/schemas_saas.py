@@ -478,6 +478,9 @@ class PaginatedResponse(BaseModel):
 class ReportSettingsCreate(BaseModel):
     """Create or update report customization settings"""
     hospital_name: Optional[str] = Field(None, max_length=255)
+    doctor_name: Optional[str] = Field(None, max_length=255)
+    footer_text: Optional[str] = None
+    logo_base64: Optional[str] = None  # Base64-encoded logo image
     hospital_logo_url: Optional[str] = Field(None, max_length=500)
     hospital_address: Optional[str] = None
     hospital_contact: Optional[str] = Field(None, max_length=255)
@@ -494,6 +497,9 @@ class ReportSettingsResponse(BaseModel):
     user_id: int
     tenant_id: int
     hospital_name: Optional[str]
+    doctor_name: Optional[str]
+    footer_text: Optional[str]
+    logo_base64: Optional[str]
     hospital_logo_url: Optional[str]
     hospital_address: Optional[str]
     hospital_contact: Optional[str]
