@@ -33,5 +33,8 @@ services:
     rootDir: frontend
     buildCommand: npm install && npm run build
     staticPublishPath: build
-    # SPA routing handled by _redirects file in public/ folder
-    # _redirects is automatically copied to build/ by Create React App
+    # SPA routing - serve index.html for all routes
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
