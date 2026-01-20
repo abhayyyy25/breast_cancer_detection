@@ -144,7 +144,7 @@
   margin: 32px 0;
 }
 
-.history-timeline > h2 {
+.history-timeline>h2 {
   font-size: 28px;
   font-weight: 800;
   margin-bottom: 32px;
@@ -460,25 +460,30 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background: #ffffff; /* White background for clean look */
+  background: #ffffff;
+  /* White background for clean look */
   padding: 28px 32px;
   border-radius: 16px;
-  color: #111827; /* Dark gray text for readability on white */
+  color: #111827;
+  /* Dark gray text for readability on white */
   margin-bottom: 24px;
-  border: 2px solid #e5e7eb; /* Light border to define the banner */
+  border: 2px solid #e5e7eb;
+  /* Light border to define the banner */
 }
 
 .all-patients-view .header-title h1 {
   margin: 0;
   font-size: 32px;
   font-weight: 700;
-  color: #111827; /* Dark text for maximum readability */
+  color: #111827;
+  /* Dark text for maximum readability */
 }
 
 .all-patients-view .header-title .subtitle {
   margin: 8px 0 0 0;
   font-size: 15px;
-  color: #6b7280; /* Medium gray for subtitle */
+  color: #6b7280;
+  /* Medium gray for subtitle */
 }
 
 .all-patients-view .header-stats {
@@ -487,12 +492,14 @@
 }
 
 .all-patients-view .stat-badge {
-  background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%); /* Magenta gradient for stats */
+  background: linear-gradient(135deg, #ec4899 0%, #d946ef 100%);
+  /* Magenta gradient for stats */
   padding: 16px 24px;
   border-radius: 12px;
   text-align: center;
   border: 2px solid #f9a8d4;
-  color: white; /* White text on magenta background */
+  color: white;
+  /* White text on magenta background */
 }
 
 .all-patients-view .stat-number {
@@ -500,13 +507,15 @@
   font-size: 28px;
   font-weight: 700;
   margin-bottom: 4px;
-  color: white; /* Ensure white text on magenta */
+  color: white;
+  /* Ensure white text on magenta */
 }
 
 .all-patients-view .stat-label {
   display: block;
   font-size: 13px;
-  color: rgba(255, 255, 255, 0.95); /* Slightly transparent white */
+  color: rgba(255, 255, 255, 0.95);
+  /* Slightly transparent white */
 }
 
 /* Search and Filter Bar */
@@ -595,7 +604,7 @@
 .patients-history-list {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 8px;
 }
 
 /* Patient Card */
@@ -614,11 +623,13 @@
 
 .patient-card-header {
   display: flex;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 24px;
+  padding: 12px 16px;
   cursor: pointer;
   transition: background 0.2s;
+  min-height: auto;
 }
 
 .patient-card-header:hover {
@@ -627,33 +638,36 @@
 
 .patient-info-section {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   align-items: center;
   flex: 1;
 }
 
 .patient-avatar-large {
-  width: 80px;
-  height: 80px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 32px;
+  font-size: 18px;
   font-weight: 700;
   color: white;
-  border: 4px solid #f3f4f6;
+  border: 2px solid #f3f4f6;
   flex-shrink: 0;
 }
 
 .patient-basic-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
   flex: 1;
 }
 
 .patient-name {
-  margin: 0 0 12px 0;
-  font-size: 24px;
+  margin: 0;
+  font-size: 16px;
   font-weight: 700;
   color: var(--color-textPrimary);
 }
@@ -661,15 +675,17 @@
 .patient-meta-row {
   display: flex;
   flex-wrap: wrap;
-  gap: 12px;
+  gap: 8px;
+  align-items: center;
 }
 
 .meta-badge {
   background: #f3f4f6;
-  padding: 6px 12px;
-  border-radius: 8px;
+  padding: 4px 10px;
+  border-radius: 6px;
   font-size: 13px;
   color: #4b5563;
+  white-space: nowrap;
 }
 
 .meta-badge strong {
@@ -680,42 +696,47 @@
 /* Patient Stats Section */
 .patient-stats-section {
   display: flex;
-  gap: 24px;
+  gap: 12px;
   align-items: center;
+  flex-shrink: 0;
 }
 
 .stat-item {
   text-align: center;
-  padding: 12px 20px;
+  padding: 6px 12px;
   background: #f9fafb;
-  border-radius: 10px;
+  border-radius: 6px;
+  min-width: 80px;
 }
 
 .stat-item .stat-value {
   display: block;
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: #667eea;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
+  line-height: 1;
 }
 
 .stat-item .stat-label {
   display: block;
-  font-size: 12px;
+  font-size: 10px;
   color: #6b7280;
   text-transform: uppercase;
   letter-spacing: 0.5px;
+  line-height: 1;
 }
 
 .expand-icon {
-  font-size: 20px;
+  font-size: 16px;
   color: #9ca3af;
   transition: transform 0.3s;
+  margin-left: 12px;
 }
 
 /* Patient Scans Section (Expanded) */
 .patient-scans-section {
-  padding: 0 24px 24px 24px;
+  padding: 0 16px 16px 16px;
   background: #f9fafb;
   border-top: 2px solid #e5e7eb;
 }
@@ -932,4 +953,3 @@
     width: 100%;
   }
 }
-

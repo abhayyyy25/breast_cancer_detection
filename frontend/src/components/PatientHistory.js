@@ -52,10 +52,10 @@ const PatientHistory = ({ patient, onBack }) => {
 
       const patients = await response.json();
       console.log('✅ Received patients:', patients);
-      
+
       // Ensure patients is an array
       const patientsArray = Array.isArray(patients) ? patients : [];
-      
+
       // Fetch scans for each patient
       console.log('📥 Fetching scans for', patientsArray.length, 'patients...');
       const patientsWithHistory = await Promise.all(
@@ -124,7 +124,7 @@ const PatientHistory = ({ patient, onBack }) => {
           }
         })
       );
-      
+
       console.log('✅ All patient histories loaded:', patientsWithHistory);
       setAllPatientsHistory(patientsWithHistory);
     } catch (err) {
@@ -186,11 +186,11 @@ const PatientHistory = ({ patient, onBack }) => {
 
   const formatDate = (dateString) => {
     if (!dateString) return 'N/A';
-    
+
     try {
       const date = new Date(dateString);
       if (isNaN(date.getTime())) return 'Invalid Date';
-      
+
       return date.toLocaleDateString('en-US', {
         year: 'numeric',
         month: 'long',
@@ -206,11 +206,11 @@ const PatientHistory = ({ patient, onBack }) => {
 
   const calculateAge = (dateString) => {
     if (!dateString) return 'N/A';
-    
+
     try {
       const birthDate = new Date(dateString);
       if (isNaN(birthDate.getTime())) return 'N/A';
-      
+
       const today = new Date();
       let age = today.getFullYear() - birthDate.getFullYear();
       const monthDiff = today.getMonth() - birthDate.getMonth();
@@ -248,18 +248,18 @@ const PatientHistory = ({ patient, onBack }) => {
   };
 
   // Filter patients based on search query
-  const filteredPatients = Array.isArray(allPatientsHistory) 
+  const filteredPatients = Array.isArray(allPatientsHistory)
     ? allPatientsHistory.filter((patientData) => {
-        const patient = patientData?.patient;
-        if (!patient) return false;
-        
-        const searchLower = searchQuery.toLowerCase();
-        return (
-          patient.full_name?.toLowerCase().includes(searchLower) ||
-          patient.mrn?.toLowerCase().includes(searchLower) ||
-          (patient.phone && patient.phone.includes(searchQuery))
-        );
-      })
+      const patient = patientData?.patient;
+      if (!patient) return false;
+
+      const searchLower = searchQuery.toLowerCase();
+      return (
+        patient.full_name?.toLowerCase().includes(searchLower) ||
+        patient.mrn?.toLowerCase().includes(searchLower) ||
+        (patient.phone && patient.phone.includes(searchQuery))
+      );
+    })
     : [];
 
   if (loading) {
@@ -298,7 +298,7 @@ const PatientHistory = ({ patient, onBack }) => {
           </div>
           <div className="stat-badge">
             <span className="stat-number">
-              {Array.isArray(allPatientsHistory) 
+              {Array.isArray(allPatientsHistory)
                 ? allPatientsHistory.reduce((sum, p) => sum + (p?.total_scans || 0), 0)
                 : 0}
             </span>
@@ -435,8 +435,8 @@ const PatientHistory = ({ patient, onBack }) => {
                                 </span>
                               </td>
                               <td className="confidence-cell">
-                                {scan?.confidence_score 
-                                  ? `${(scan.confidence_score * 100).toFixed(1)}%` 
+                                {scan?.confidence_score
+                                  ? `${(scan.confidence_score * 100).toFixed(1)}%`
                                   : 'N/A'}
                               </td>
                               <td className="doctor-cell">{scan?.doctor_name || 'N/A'}</td>

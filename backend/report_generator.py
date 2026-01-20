@@ -327,23 +327,7 @@ def generate_pdf_report(scan, patient, current_user, settings_data=None):
     # -------------------------
     # CUSTOM STYLES
     # -------------------------
-    cover_title_style = ParagraphStyle(
-        'CoverTitle',
-        parent=styles['Heading1'],
-        fontSize=24,
-        textColor=colors.HexColor('#1A237E'),
-        alignment=TA_CENTER,
-        spaceAfter=30,
-    )
-    
-    subtitle_style = ParagraphStyle(
-        'Subtitle',
-        parent=styles['Normal'],
-        fontSize=14,
-        textColor=colors.HexColor('#424242'),
-        alignment=TA_CENTER,
-        spaceAfter=20,
-    )
+    # Cover page styles removed - no longer needed
     
     heading_style = ParagraphStyle(
         'Heading',
@@ -464,77 +448,77 @@ def generate_pdf_report(scan, patient, current_user, settings_data=None):
             return None
     
     # ============================
-    #  COVER PAGE
+    #  REPORT CONTENT - Start immediately with analysis
     # ============================
-    story.append(Spacer(1, 0.5 * inch))
-    
-    # Add logo if available from settings
-    if settings_data and settings_data.logo_base64:
-        logo_img = base64_to_rl_image(settings_data.logo_base64)
-        if logo_img:
-            story.append(logo_img)
-            story.append(Spacer(1, 0.2 * inch))
-    
-    # Hospital/Clinic Name
-    hospital_name = settings_data.hospital_name if settings_data and settings_data.hospital_name else "Medical Facility"
-    story.append(Paragraph(hospital_name.upper(), cover_title_style))
-    story.append(Spacer(1, 0.1 * inch))
-    
-    story.append(Paragraph("BREAST CANCER DETECTION<br/>MEDICAL REPORT", cover_title_style))
-    story.append(Spacer(1, 0.3 * inch))
-    story.append(Paragraph("AI-Powered Medical Imaging Analysis", subtitle_style))
-    story.append(Spacer(1, 0.4 * inch))
+    # NO COVER PAGE - Header already contains all branding
     
     # Extract values with safe defaults
     prediction = scan.prediction or "Unknown"
     risk_level = scan.risk_level or "Unknown"
     confidence = scan.confidence_score or 0.0
     
-    # COVER Summary Box
-    cover_table_data = [
-        [f"Classification: {prediction.upper()}"],
-        [f"Risk Level: {risk_level.upper()}"],
-        [f"Confidence: {confidence:.2f}%"],
+    # Calculate probabilities
+    benign_prob = 100 - confidence if prediction.lower() == "malignant" else confidence
+    malignant_prob = confidence if prediction.lower() == "malignant" else 100 - confidence
+    
+    # ============================
+    # AI ANALYSIS SUMMARY (First content on page 1)
+    # ============================
+    # Professional summary box - no duplicate branding
+    analysis_summary_data = [
+        ['AI ANALYSIS SUMMARY', ''],
+        ['Classification:', prediction.upper()],
+        ['Risk Level:', risk_level.upper()],
+        ['Confidence Score:', f"{confidence:.2f}%"],
+        ['Benign Probability:', f"{benign_prob:.2f}%"],
+        ['Malignant Probability:', f"{malignant_prob:.2f}%"],
     ]
     
-    cover_table = Table(cover_table_data, colWidths=[5.5 * inch])
-    cover_table.setStyle(
+    analysis_summary_table = Table(analysis_summary_data, colWidths=[2.5 * inch, 3.7 * inch])
+    analysis_summary_table.setStyle(
         TableStyle(
             [
-                ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#E8EAF6")),
-                ('BOX', (0, 0), (-1, -1), 2, colors.HexColor("#1A237E")),
-                ('FONTNAME', (0, 0), (-1, -1), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, -1), 14),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('TOPPADDING', (0, 0), (-1, -1), 12),
-                ('BOTTOMPADDING', (0, 0), (-1, -1), 12),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#1A237E")),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 14),
+                ('SPAN', (0, 0), (-1, 0)),
+                ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor("#E8EAF6")),
+                ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+                ('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),
+                ('TOPPADDING', (0, 0), (-1, -1), 8),
+                ('BOTTOMPADDING', (0, 0), (-1, -1), 8),
             ]
         )
     )
     
-    story.append(cover_table)
-    story.append(Spacer(1, 0.5 * inch))
+    story.append(analysis_summary_table)
+    story.append(Spacer(1, 0.3 * inch))
     
-    # Patient Information Box
+    # ============================
+    # PATIENT INFORMATION
+    # ============================
     patient_info_data = [
-        ['Patient Information', ''],
+        ['PATIENT INFORMATION', ''],
         ['Name:', patient.full_name or 'N/A'],
         ['MRN:', patient.mrn or 'N/A'],
         ['Date of Birth:', patient.date_of_birth.strftime('%B %d, %Y') if patient.date_of_birth else 'N/A'],
         ['Gender:', patient.gender.value if patient.gender else 'N/A'],
     ]
     
-    patient_info_table = Table(patient_info_data, colWidths=[2 * inch, 3.5 * inch])
+    patient_info_table = Table(patient_info_data, colWidths=[2 * inch, 4.2 * inch])
     patient_info_table.setStyle(
         TableStyle(
             [
                 ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#1A237E")),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor("#F5F5F5")),
-                ('GRID', (0, 0), (-1, -1), 1, colors.grey),
                 ('SPAN', (0, 0), (-1, 0)),
                 ('ALIGN', (0, 0), (-1, 0), 'CENTER'),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.HexColor("#F5F5F5")),
+                ('GRID', (0, 0), (-1, -1), 1, colors.grey),
+                ('FONTNAME', (0, 1), (0, -1), 'Helvetica-Bold'),
             ]
         )
     )
@@ -542,22 +526,23 @@ def generate_pdf_report(scan, patient, current_user, settings_data=None):
     story.append(patient_info_table)
     story.append(Spacer(1, 0.3 * inch))
     
+    # Report metadata (compact, professional)
+    # Use doctor name from settings if available
+    doctor_name = settings_data.doctor_name if settings_data and settings_data.doctor_name else current_user.full_name
+    
     story.append(
         Paragraph(
             f"<b>Report Generated:</b> {datetime.now().strftime('%B %d, %Y - %H:%M:%S')}",
             normal_style,
         )
     )
-    
-    # Use doctor name from settings if available
-    doctor_name = settings_data.doctor_name if settings_data and settings_data.doctor_name else current_user.full_name
     story.append(
         Paragraph(
             f"<b>Generated By:</b> {doctor_name} ({current_user.role.value.replace('_', ' ').title()})",
             normal_style,
         )
     )
-    story.append(PageBreak())
+    story.append(Spacer(1, 0.3 * inch))
     
     # ============================
     # EXECUTIVE SUMMARY

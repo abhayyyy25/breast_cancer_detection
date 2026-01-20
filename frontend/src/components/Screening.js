@@ -15,7 +15,7 @@ import './Screening.css';
  */
 function Screening({ onViewHistory }) {
   const { API_BASE_URL, getAuthHeader } = useAuth();
-  
+
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [showDisclaimer, setShowDisclaimer] = useState(false);
   const [disclaimerAccepted, setDisclaimerAccepted] = useState(false);
@@ -43,7 +43,7 @@ function Screening({ onViewHistory }) {
         setError('Please select an image file');
         return;
       }
-      
+
       setSelectedFile(file);
       setPreviewUrl(URL.createObjectURL(file));
       setError(null);
@@ -76,12 +76,12 @@ function Screening({ onViewHistory }) {
       // Create FormData
       const formData = new FormData();
       formData.append('image', selectedFile); // CORRECT: Backend expects 'image'
-      
+
       // Add doctor notes if provided
       if (doctorNotes.trim()) {
         formData.append('doctor_notes', doctorNotes);
       }
-      
+
       // CRITICAL FIX: Send boolean as Form field value
       // FastAPI will parse form field values, so we send the string 'true'
       // But we need to ensure patient_id is an integer in the URL
@@ -142,8 +142,8 @@ function Screening({ onViewHistory }) {
   if (!selectedPatient) {
     return (
       <div className="screening-container">
-        <PatientManagement 
-          onPatientSelect={handlePatientSelect} 
+        <PatientManagement
+          onPatientSelect={handlePatientSelect}
           onViewHistory={onViewHistory}
         />
       </div>
@@ -156,18 +156,18 @@ function Screening({ onViewHistory }) {
         isOpen={showDisclaimer}
         onAccept={handleDisclaimerAccept}
         onDecline={handleDisclaimerDecline}
-        patientName={`${selectedPatient.first_name} ${selectedPatient.last_name}`}
+        patientName={selectedPatient.full_name}
       />
 
       <div className="screening-header">
         <div>
           <h2>Breast Cancer Screening</h2>
           <p className="selected-patient-info">
-            Patient: <strong>{selectedPatient.first_name} {selectedPatient.last_name}</strong> 
-            (MRN: {selectedPatient.medical_record_number})
+            Patient: <strong>{selectedPatient.full_name}</strong>
+            (MRN: {selectedPatient.mrn})
           </p>
         </div>
-        <button 
+        <button
           className="btn-change-patient"
           onClick={() => setSelectedPatient(null)}
         >
@@ -185,7 +185,7 @@ function Screening({ onViewHistory }) {
         <div className="upload-section">
           <div className="upload-card">
             <h3>Upload Medical Image</h3>
-            
+
             {!previewUrl ? (
               <div className="file-upload-area">
                 <input
@@ -204,7 +204,7 @@ function Screening({ onViewHistory }) {
             ) : (
               <div className="preview-section">
                 <img src={previewUrl} alt="Preview" className="image-preview" />
-                
+
                 <div className="notes-section">
                   <label htmlFor="doctor-notes">Doctor's Notes (Optional)</label>
                   <textarea
@@ -217,14 +217,14 @@ function Screening({ onViewHistory }) {
                 </div>
 
                 <div className="upload-actions">
-                  <button 
+                  <button
                     className="btn-secondary"
                     onClick={resetAnalysis}
                     disabled={analyzing}
                   >
                     Cancel
                   </button>
-                  <button 
+                  <button
                     className="btn-primary"
                     onClick={() => {
                       if (!disclaimerAccepted) {
@@ -256,7 +256,7 @@ function Screening({ onViewHistory }) {
             <div className="demo-mode-banner">
               <div className="demo-icon">⚠️</div>
               <div className="demo-content">
-                <strong>DEMO MODE ACTIVE:</strong> Using simulated AI predictions for demonstration purposes. 
+                <strong>DEMO MODE ACTIVE:</strong> Using simulated AI predictions for demonstration purposes.
                 {results?.analysis?.demo_warning && (
                   <span className="demo-details"> {results.analysis.demo_warning}</span>
                 )}
@@ -267,8 +267,8 @@ function Screening({ onViewHistory }) {
           <div className="results-grid">
             <div className="result-card primary">
               <h4>Prediction Result</h4>
-              <div className="result-value" style={{ 
-                color: results?.analysis?.result?.includes('Malignant') ? '#dc2626' : '#10b981' 
+              <div className="result-value" style={{
+                color: results?.analysis?.result?.includes('Malignant') ? '#dc2626' : '#10b981'
               }}>
                 {results?.analysis?.result || 'N/A'}
               </div>
@@ -290,7 +290,7 @@ function Screening({ onViewHistory }) {
                 <div className="prob-item">
                   <span>Malignant:</span>
                   <div className="prob-bar">
-                    <div 
+                    <div
                       className="prob-fill malignant"
                       style={{ width: `${results?.analysis?.malignant_prob || 0}%` }}
                     />
@@ -300,7 +300,7 @@ function Screening({ onViewHistory }) {
                 <div className="prob-item">
                   <span>Benign:</span>
                   <div className="prob-bar">
-                    <div 
+                    <div
                       className="prob-fill benign"
                       style={{ width: `${results?.analysis?.benign_prob || 0}%` }}
                     />
@@ -312,7 +312,7 @@ function Screening({ onViewHistory }) {
           </div>
 
           <div className="scan-info-banner">
-            <strong>Scan ID:</strong> {results?.scan_id || 'N/A'} | 
+            <strong>Scan ID:</strong> {results?.scan_id || 'N/A'} |
             <strong> Saved for:</strong> {results?.patient_name || 'Unknown'}
           </div>
         </div>

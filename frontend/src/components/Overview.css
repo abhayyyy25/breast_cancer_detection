@@ -54,14 +54,39 @@
 }
 
 .stat-icon {
-  font-size: 48px;
   width: 72px;
   height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #F1F5F9;
+  background: #EFF6FF;
+  /* Medical blue tint */
   border-radius: 12px;
+  flex-shrink: 0;
+}
+
+/* Professional Medical Icon Styling */
+.medical-icon {
+  color: #2563EB;
+  /* Medical blue - primary brand color */
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover .medical-icon {
+  color: #1D4ED8;
+  /* Darker blue on hover */
+  transform: scale(1.05);
+}
+
+/* System Status - Active State */
+.status-active {
+  color: #10B981;
+  /* Medical green for active/healthy status */
+}
+
+.stat-card:hover .status-active {
+  color: #059669;
+  /* Darker green on hover */
 }
 
 .stat-content {
@@ -119,8 +144,34 @@
 }
 
 .action-icon {
-  font-size: 64px;
-  margin-bottom: 16px;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #EFF6FF;
+  /* Medical blue tint */
+  border-radius: 16px;
+  transition: all 0.3s ease;
+}
+
+/* Professional Medical Action Icon Styling */
+.medical-action-icon {
+  color: #2563EB;
+  /* Medical blue - primary brand color */
+}
+
+.action-card:hover .medical-action-icon {
+  color: #1D4ED8;
+  /* Darker blue on hover */
+  transform: scale(1.08);
+}
+
+.action-card:hover .action-icon {
+  background: #DBEAFE;
+  /* Slightly darker blue tint on hover */
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
 }
 
 .action-card h3 {
