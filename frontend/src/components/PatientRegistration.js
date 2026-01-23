@@ -58,7 +58,8 @@ const PatientRegistration = ({ onBack, onPatientRegistered }) => {
 
     try {
       const token = localStorage.getItem('token');
-      const response = await fetch('http://localhost:8000/api/medical-staff/patients', {
+      const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:8000/api';
+      const response = await fetch(`${API_BASE_URL}/medical-staff/patients`, {
         method: 'POST',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -32,6 +32,8 @@ app = FastAPI(
 # CORS CONFIGURATION
 # ============================================================================
 
+# Production-ready CORS configuration
+# Explicitly allow both development (localhost) and production (Render) origins
 allowed_origins = os.getenv(
     "ALLOWED_ORIGINS",
     "http://localhost:3000,http://localhost:3001,http://127.0.0.1:3000,https://breast-cancer-detection-frontend.onrender.com"
@@ -42,13 +44,15 @@ allowed_origins = [origin.strip() for origin in allowed_origins if origin.strip(
 
 print(f"[CORS] Allowed origins: {allowed_origins}")
 
+# Add CORS middleware with explicit preflight support
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=allowed_origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["*"]
+    allow_origins=allowed_origins,  # Explicit origins (no wildcard for security)
+    allow_credentials=True,          # Allow cookies and authorization headers
+    allow_methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],  # Explicit methods including OPTIONS for preflight
+    allow_headers=["*"],             # Allow all headers including Authorization
+    expose_headers=["*"],            # Expose all response headers
+    max_age=600                      # Cache preflight requests for 10 minutes
 )
 
 

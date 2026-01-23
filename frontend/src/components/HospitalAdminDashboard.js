@@ -59,7 +59,7 @@ const HospitalAdminDashboard = () => {
     },
     put: async (url, data) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api${url}`, {
+      const response = await fetch(`${API_BASE_URL}${url}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -77,7 +77,7 @@ const HospitalAdminDashboard = () => {
     },
     delete: async (url) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api${url}`, {
+      const response = await fetch(`${API_BASE_URL}${url}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

@@ -41,7 +41,7 @@ const PatientDashboard = () => {
     },
     put: async (url, data) => {
       const token = localStorage.getItem('token');
-      const response = await fetch(`http://localhost:8000/api${url}`, {
+      const response = await fetch(`${API_BASE_URL}${url}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
