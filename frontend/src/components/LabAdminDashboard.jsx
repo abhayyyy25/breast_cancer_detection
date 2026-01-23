@@ -68,7 +68,7 @@ const LabAdminDashboard = () => {
         role: 'lab_tech'
       };
       const response = await axiosInstance.post('/hospital-admin/users', userData);
-      
+
       // Show generated credentials
       alert(
         `Lab Technician Created Successfully!\n\n` +
@@ -77,7 +77,7 @@ const LabAdminDashboard = () => {
         `⚠️ Please save these credentials securely.\n` +
         `Password won't be shown again!`
       );
-      
+
       setShowCreateUserModal(false);
       setNewUser({
         email: '',
@@ -93,15 +93,18 @@ const LabAdminDashboard = () => {
     }
   };
 
-  const handleDeactivateUser = async (userId, userName) => {
-    if (window.confirm(`Are you sure you want to deactivate ${userName}?`)) {
+  const handleToggleUserStatus = async (userId, userName, currentStatus) => {
+    const action = currentStatus ? 'deactivate' : 'activate';
+
+    if (window.confirm(`Are you sure you want to ${action} ${userName}?`)) {
       try {
-        await axiosInstance.delete(`/hospital-admin/users/${userId}`);
+        await axiosInstance.put(`/hospital-admin/users/${userId}/status`);
         fetchUsers();
         fetchDashboardData();
+        alert(`User '${userName}' ${action}d successfully`);
       } catch (error) {
-        console.error('Error deactivating user:', error);
-        alert('Failed to deactivate user');
+        console.error(`Error ${action}ing user:`, error);
+        alert(`Failed to ${action} user`);
       }
     }
   };
@@ -201,8 +204,8 @@ const LabAdminDashboard = () => {
                   dashboardData.scan_limit_usage_percentage > 90
                     ? colors.error
                     : dashboardData.scan_limit_usage_percentage > 75
-                    ? colors.warning
-                    : colors.success,
+                      ? colors.warning
+                      : colors.success,
               }}
             />
           </div>
@@ -361,10 +364,10 @@ const LabAdminDashboard = () => {
 
                       <div className="user-actions">
                         <button
-                          className="btn-deactivate"
-                          onClick={() => handleDeactivateUser(user.id, user.full_name)}
+                          className={user.is_active ? "btn-deactivate" : "btn-activate"}
+                          onClick={() => handleToggleUserStatus(user.id, user.full_name, user.is_active)}
                         >
-                          Deactivate
+                          {user.is_active ? 'Deactivate' : 'Activate'}
                         </button>
                       </div>
                     </div>

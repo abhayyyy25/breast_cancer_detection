@@ -325,6 +325,7 @@ async def deactivate_user(
 ):
     """
     Deactivate a user (soft delete)
+    DEPRECATED: Use PUT /users/{user_id}/status instead
     """
     await verify_tenant_access(tenant_id, current_user, db)
     
@@ -358,6 +359,57 @@ async def deactivate_user(
     
     return MessageResponse(
         message=f"User '{user.full_name}' deactivated successfully",
+        success=True
+    )
+
+
+@router.put("/users/{user_id}/status", response_model=MessageResponse)
+async def toggle_user_status(
+    user_id: int,
+    request: Request,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(require_org_admin),
+    tenant_id: int = Depends(get_user_tenant_id)
+):
+    """
+    Toggle user status between active and inactive
+    Allows both deactivation and reactivation of users
+    """
+    await verify_tenant_access(tenant_id, current_user, db)
+    
+    user = db.query(User).filter(
+        and_(
+            User.id == user_id,
+            User.tenant_id == tenant_id
+        )
+    ).first()
+    
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User not found"
+        )
+    
+    # Toggle the status
+    new_status = not user.is_active
+    user.is_active = new_status
+    user.updated_at = datetime.utcnow()
+    db.commit()
+    
+    # Audit log
+    action = "activate" if new_status else "deactivate"
+    await create_audit_log(
+        db=db,
+        user=current_user,
+        action=action,
+        resource_type="user",
+        resource_id=user.id,
+        description=f"{'Activated' if new_status else 'Deactivated'} user: {user.full_name}",
+        request=request
+    )
+    
+    return MessageResponse(
+        message=f"User '{user.full_name}' {'activated' if new_status else 'deactivated'} successfully",
         success=True
     )
 

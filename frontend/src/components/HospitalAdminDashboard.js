@@ -190,15 +190,19 @@ const HospitalAdminDashboard = () => {
     }
   };
 
-  const handleDeactivateUser = async (userId, userName) => {
-    if (window.confirm(`Are you sure you want to deactivate ${userName}?`)) {
+  const handleToggleUserStatus = async (userId, userName, currentStatus) => {
+    const action = currentStatus ? 'deactivate' : 'activate';
+    const actionCapitalized = currentStatus ? 'Deactivate' : 'Activate';
+
+    if (window.confirm(`Are you sure you want to ${action} ${userName}?`)) {
       try {
-        await axiosInstance.delete(`/hospital-admin/users/${userId}`);
+        await axiosInstance.put(`/hospital-admin/users/${userId}/status`);
         fetchUsers();
         fetchDashboardData();
+        alert(`User '${userName}' ${action}d successfully`);
       } catch (error) {
-        console.error('Error deactivating user:', error);
-        alert('Failed to deactivate user');
+        console.error(`Error ${action}ing user:`, error);
+        alert(`Failed to ${action} user`);
       }
     }
   };
@@ -276,13 +280,13 @@ const HospitalAdminDashboard = () => {
       width: '120px',
       render: (row) => (
         <button
-          className="eds-button eds-button-sm eds-button-danger"
+          className={`eds-button eds-button-sm ${row.is_active ? 'eds-button-danger' : 'eds-button-success'}`}
           onClick={(e) => {
             e.stopPropagation();
-            handleDeactivateUser(row.id, row.full_name);
+            handleToggleUserStatus(row.id, row.full_name, row.is_active);
           }}
         >
-          Deactivate
+          {row.is_active ? 'Deactivate' : 'Activate'}
         </button>
       ),
     },
